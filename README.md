@@ -22,9 +22,24 @@ _(se completa durante las semanas 2 a 4)_
 _(ver la tabla al final de este archivo)_
 
 ## Resumen de commits
-| # | Fecha | Hash | Mensaje | Zona | Cambio |
-|---|------------|---------|--------------------------|--------|---------------|
-| 1 | 2026-09-07 | a3f9c21 | Crear estructura base | Global | Carpetas |
-| 2 | 2026-09-07 | ab6acf1 | Coreccion en la documentacion inicial (.README) | Cat. | .README |
-| 3 | 2026-09-07 | 7b21e04 | Agregar tabla de resume de commits | Cat. | .README |
-| 4 | 2026-09-07 | 7b21e04 | Maquetar el catalogo | Cat. | Tarjetas HTML |
+
+<!-- INICIO TABLA COMMITS -->
+
+| # | Fecha | Hash | Mensaje |
+|---|-------|------|---------|
+| 1 | 2026-09-07 | 5072c81 | Crear estructura del avance 1 y documentacion inicial |
+| 2 | 2026-09-07 | ab6acf1 | Coreccion en la documentacion inicial (.README) |
+| 3 | 2026-09-07 | f5a1acb | Agregar tabla de resumen de commits |
+
+<!-- FIN TABLA COMMITS -->
+
+## Activar el hook de pre-commit
+
+Este repositorio incluye un script que actualiza automáticamente la tabla de commits antes de cada commit. Los hooks de Git no se versionan, así que cada persona debe activarlo manualmente después de clonar el repositorio:
+
+\`\`\`bash
+chmod +x herramientas/tabla-commits.sh
+cp herramientas/tabla-commits.sh .git/hooks/pre-commit
+echo "git add README.md" >> .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+\`\`\`
