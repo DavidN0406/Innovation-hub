@@ -20,3 +20,11 @@ Abrir `avance1/index.html` en el navegador. No requiere instalación.
 _(se completa durante las semanas 2 a 4)_
 ## Resumen de commits
 _(ver la tabla al final de este archivo)_
+
+## Resumen de commits
+| # | Fecha | Hash | Mensaje | Zona | Cambio |
+|---|------------|---------|--------------------------|--------|---------------|
+| 1 | 2026-09-07 | a3f9c21 | Crear estructura base | Global | Carpetas |
+| 2 | 2026-09-07 | ab6acf1 | Coreccion en la documentacion inicial (.README) | Cat. | .README |
+| 3 | 2026-09-07 | 7b21e04 | Agregar tabla de resume de commits | Cat. | .README |
+| 4 | 2026-09-07 | 7b21e04 | Maquetar el catalogo | Cat. | Tarjetas HTML |
