@@ -27,10 +27,6 @@ _(ver la tabla al final de este archivo)_
 
 | # | Fecha | Hash | Mensaje |
 |---|-------|------|---------|
-| 1 | 2026-09-07 | 5072c81 | Crear estructura del avance 1 y documentacion inicial |
-| 2 | 2026-09-07 | ab6acf1 | Coreccion en la documentacion inicial (.README) |
-| 3 | 2026-09-07 | f5a1acb | Agregar tabla de resumen de commits |
-| 4 | 2026-09-07 | 65eec6e | Prueba tabbla de commits automatica |
 
 <!-- FIN TABLA COMMITS -->
 

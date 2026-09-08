@@ -6,7 +6,7 @@ TABLA=$(
   echo "|---|-------|------|---------|"
   git log --reverse --date=short --pretty=format:"%ad|%h|%s" \
     | nl -w1 -s'|' \
-    | awk -F'|' '{print "| " $1 " | " $2 " | " $3 " | " $4 " |"}'
+    | awk -F'|' '{print "| " $1 " | " $2 " | " $3 " | " $4 " |"}'ls -la .git/hooks/pre-commit
 )
 
 awk -v tabla="$TABLA" '
