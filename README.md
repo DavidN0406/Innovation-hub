@@ -35,6 +35,7 @@ _(ver la tabla al final de este archivo)_
 | 6 | 2026-09-07 | 864099a | Maquetar el encabezado y la navegación del catálogo |
 | 7 | 2026-09-07 | e30e10d | corrige script y actualiza tabla de commits |
 | 8 | 2026-09-07 | ead8a8c | Se agrega el titulo y el panel de filtros |
+| 9 | 2026-09-07 | d355dc6 | Completar la estructura semántica del catálogo |
 
 <!-- FIN TABLA COMMITS -->
 
@@ -48,3 +49,8 @@ cp herramientas/tabla-commits.sh .git/hooks/pre-commit
 echo "git add README.md" >> .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 \`\`\`
+
+> **Nota:** Debido a cómo funcionan los hooks de Git, cada commit aparece 
+> reflejado en la tabla hasta que se realiza el commit siguiente, ya que 
+> el hook actualiza la tabla antes de que el commit actual se registre 
+> en el historial.
