@@ -34,6 +34,7 @@ _(ver la tabla al final de este archivo)_
 | 5 | 2026-09-07 | 2bf36d1 | Segunda prueba tabla automatica |
 | 6 | 2026-09-07 | 864099a | Maquetar el encabezado y la navegación del catálogo |
 | 7 | 2026-09-07 | e30e10d | corrige script y actualiza tabla de commits |
+| 8 | 2026-09-07 | ead8a8c | Se agrega el titulo y el panel de filtros |
 
 <!-- FIN TABLA COMMITS -->
 
