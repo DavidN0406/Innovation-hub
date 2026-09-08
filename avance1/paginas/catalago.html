@@ -6,8 +6,8 @@
  <title>Catálogo de iniciativas — Innovation Hub</title>
 </head>
 <body>
- <!-- ACTIVIDAD 2: header con la marca y la navegación -->
 
+ <!-- ACTIVIDAD 2: header con la marca y la navegación -->
  <header>
  <a href="../index.html">Innovation Hub</a>
  <nav aria-label="Principal">
@@ -22,7 +22,39 @@
 </header>
 
  <!-- ACTIVIDAD 3: main con h1 -->
+ <h1>Catálogo de iniciativas</h1>
+
  <!-- ACTIVIDAD 4: aside de filtros -->
+  <aside aria-labelledby="titulo-filtros">
+ <h2 id="titulo-filtros">Filtrar iniciativas</h2>
+ <form>
+ <p>
+ <label for="filtro-tipo">Tipo</label>
+ <select id="filtro-tipo" name="tipo">
+ <option value="">Todos</option>
+ <option value="idea">Idea</option>
+ <option value="necesidad">Necesidad</option>
+ <option value="reto">Reto</option>
+ </select>
+ </p>
+ <p>
+ <label for="filtro-categoria">Categoría</label>
+ <select id="filtro-categoria" name="categoria">
+ <option value="">Todas</option>
+ <option value="educacion">Educación</option>
+ <option value="ambiente">Ambiente</option>
+ <option value="comunidad">Gestión comunitaria</option>
+ </select>
+ </p>
+ <p>
+ <label for="filtro-competencia">Competencia requerida</label>
+ <input type="text" id="filtro-competencia" name="competencia">
+ </p>
+ <p><button type="submit">Aplicar filtros</button></p>
+ </form>
+</aside>
+
+
  <!-- ACTIVIDAD 5: section de resultados con los article -->
  <!-- ACTIVIDAD 6: footer -->
 </body>
