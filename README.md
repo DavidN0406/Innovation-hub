@@ -36,6 +36,7 @@ _(ver la tabla al final de este archivo)_
 | 7 | 2026-09-07 | e30e10d | corrige script y actualiza tabla de commits |
 | 8 | 2026-09-07 | ead8a8c | Se agrega el titulo y el panel de filtros |
 | 9 | 2026-09-07 | d355dc6 | Completar la estructura semántica del catálogo |
+| 10 | 2026-09-07 | da96cd6 | Adicion textual al README |
 
 <!-- FIN TABLA COMMITS -->
 
