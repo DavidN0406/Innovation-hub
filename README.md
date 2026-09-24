@@ -38,6 +38,7 @@ _(ver la tabla al final de este archivo)_
 | 9 | 2026-09-07 | d355dc6 | Completar la estructura semántica del catálogo |
 | 10 | 2026-09-07 | da96cd6 | Adicion textual al README |
 | 11 | 2026-09-07 | 4a29c90 | Crear pantalla de detalle con niveles de visibilidad y formulario de solicitud |
+| 12 | 2026-09-23 | 8007d07 | Corregir gitignore y renombrar catalago a catalogo |
 
 <!-- FIN TABLA COMMITS -->
 
