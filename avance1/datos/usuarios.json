@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "nombre": "Jorge García",
+    "correo": "jgarcian@ucenfotec.ac.cr",
+    "rol": "Estudiante",
+    "competencias": ["Java", "JavaScript", "HTML/CSS"],
+    "intereses": ["Desarrollo Web", "Innovación tecnológica"]
+  },
+  {
+    "id": 2,
+    "nombre": "David Colaborador",
+    "correo": "dcolaborador@ucenfotec.ac.cr",
+    "rol": "Estudiante",
+    "competencias": ["JavaScript", "Sass", "Git"],
+    "intereses": ["Arquitectura Web", "APIs"]
+  }
+]
