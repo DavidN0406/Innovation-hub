@@ -39,6 +39,9 @@ _(ver la tabla al final de este archivo)_
 | 10 | 2026-09-07 | da96cd6 | Adicion textual al README |
 | 11 | 2026-09-07 | 4a29c90 | Crear pantalla de detalle con niveles de visibilidad y formulario de solicitud |
 | 12 | 2026-09-23 | 8007d07 | Corregir gitignore y renombrar catalago a catalogo |
+| 13 | 2026-09-23 | 7c2b086 | Variables propias sobre Bootstrap y main.scss |
+| 14 | 2026-09-25 | 1b896ff | feat(datos): usuarios de ejemplo para el perfil |
+| 15 | 2026-09-25 | 1a937df | feat(js): modulo de validacion reutilizable |
 
 <!-- FIN TABLA COMMITS -->
 
