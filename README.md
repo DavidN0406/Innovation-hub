@@ -42,6 +42,7 @@ _(ver la tabla al final de este archivo)_
 | 13 | 2026-09-23 | 7c2b086 | Variables propias sobre Bootstrap y main.scss |
 | 14 | 2026-09-25 | 1b896ff | feat(datos): usuarios de ejemplo para el perfil |
 | 15 | 2026-09-25 | 1a937df | feat(js): modulo de validacion reutilizable |
+| 16 | 2026-09-25 | 3b9a61a | feat(js): modulos nav y almacenamiento local |
 
 <!-- FIN TABLA COMMITS -->
 
