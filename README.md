@@ -46,6 +46,7 @@ _(ver la tabla al final de este archivo)_
 | 17 | 2026-09-25 | 3391df2 | feat(datos): iniciativas, categorias y competencias en JSON |
 | 18 | 2026-09-25 | 5588637 | feat(js): carga con fetch y estados de carga, error y vacio |
 | 19 | 2026-09-25 | 42365fe | fix: agregar contenido faltante a scss y datos JSON |
+| 20 | 2026-09-25 | bd9f1d7 | fix: corregir nombre de validacion.js |
 
 <!-- FIN TABLA COMMITS -->
 
