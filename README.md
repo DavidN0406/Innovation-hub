@@ -45,6 +45,7 @@ _(ver la tabla al final de este archivo)_
 | 16 | 2026-09-25 | 3b9a61a | feat(js): modulos nav y almacenamiento local |
 | 17 | 2026-09-25 | 3391df2 | feat(datos): iniciativas, categorias y competencias en JSON |
 | 18 | 2026-09-25 | 5588637 | feat(js): carga con fetch y estados de carga, error y vacio |
+| 19 | 2026-09-25 | 42365fe | fix: agregar contenido faltante a scss y datos JSON |
 
 <!-- FIN TABLA COMMITS -->
 
