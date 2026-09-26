@@ -1,0 +1,35 @@
+// Variables propias que sobrescriben las de origen de Bootstrap.
+// Van antes de importar Bootstrap para que los !default las respeten.
+
+// Colores
+$primary:   #1f4e8c;
+$secondary: #5b6770;
+$success:   #1e7b4f;
+$info:      #0f7a8a;
+$warning:   #b26b00;
+$danger:    #b3261e;
+$light:     #f6f8fb;
+$dark:      #1c2430;
+
+$body-bg:    #f6f8fb;
+$body-color: #1c2430;
+
+// Tipografia
+$font-family-sans-serif: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+$headings-font-weight: 600;
+$font-size-base: 1rem;
+$line-height-base: 1.6;
+
+// Espaciados
+$spacer: 1rem;
+
+// Bordes
+$border-radius:    0.5rem;
+$border-radius-lg: 0.75rem;
+$card-border-radius: 0.75rem;
+$card-border-color: #dde3ec;
+
+// Botones y formularios
+$btn-font-weight: 500;
+$input-focus-border-color: $primary;
+$input-btn-focus-width: 0.2rem;

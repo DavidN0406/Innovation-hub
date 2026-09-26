@@ -1,0 +1,165 @@
+[
+  {
+    "id": 1,
+    "titulo": "Coordinar voluntarios universitarios",
+    "tipo": "Idea",
+    "resumen": "Plataforma para publicar turnos de voluntariado, asignar participantes y registrar horas cumplidas.",
+    "descripcion": "Cada coordinador podrá crear turnos, definir el número de cupos y llevar un registro de las horas acumuladas por cada voluntario a lo largo del semestre.",
+    "problema": "No existe un registro centralizado de horas de voluntariado dentro de la universidad.",
+    "beneficiarios": "Estudiantes voluntarios y organizaciones comunitarias.",
+    "categoria": "Gestión comunitaria",
+    "competencias": ["React", "Diseño de interfaces"],
+    "participantesEstimados": 4,
+    "visibilidad": "publica",
+    "etiquetas": ["voluntariado", "comunidad"],
+    "autor": "Ana Rojas",
+    "fechaPublicacion": "2026-08-24",
+    "estado": "Abierta",
+    "equipo": [
+      { "nombre": "Ana Rojas", "rol": "Líder de proyecto" },
+      { "nombre": "Diego Salas", "rol": "Desarrollo frontend" }
+    ]
+  },
+  {
+    "id": 2,
+    "titulo": "App de tutorías entre estudiantes",
+    "tipo": "Necesidad",
+    "resumen": "Sistema para conectar estudiantes que necesitan ayuda en un curso con compañeros que ya lo aprobaron.",
+    "descripcion": "Permite publicar solicitudes de tutoría por curso, calendario de disponibilidad y calificación de las sesiones.",
+    "problema": "Muchos estudiantes reprueban por falta de apoyo académico accesible.",
+    "beneficiarios": "Estudiantes de cursos con alta reprobación.",
+    "categoria": "Educación",
+    "competencias": ["Node.js", "Bases de datos"],
+    "participantesEstimados": 3,
+    "visibilidad": "publica",
+    "etiquetas": ["educacion", "tutorias"],
+    "autor": "Marco Ureña",
+    "fechaPublicacion": "2026-08-20",
+    "estado": "Abierta",
+    "equipo": [
+      { "nombre": "Marco Ureña", "rol": "Líder de proyecto" }
+    ]
+  },
+  {
+    "id": 3,
+    "titulo": "Rediseño del sistema de citas médicas del TEC",
+    "tipo": "Reto",
+    "resumen": "Modernizar el sistema actual de citas del área de salud estudiantil, que es lento y poco intuitivo.",
+    "descripcion": "Se busca un equipo que rediseñe la experiencia completa, desde agendar la cita hasta recibir recordatorios.",
+    "problema": "El sistema actual genera filas largas y citas duplicadas por errores de agenda.",
+    "beneficiarios": "Estudiantes y funcionarios que usan el servicio médico.",
+    "categoria": "Salud",
+    "competencias": ["Diseño de interfaces", "Gestión de proyectos"],
+    "participantesEstimados": 5,
+    "visibilidad": "restringida",
+    "etiquetas": ["salud", "ux"],
+    "autor": "Camila Vindas",
+    "fechaPublicacion": "2026-08-18",
+    "estado": "En progreso",
+    "equipo": [
+      { "nombre": "Camila Vindas", "rol": "Líder de proyecto" },
+      { "nombre": "Josué Alfaro", "rol": "Investigación" }
+    ]
+  },
+  {
+    "id": 4,
+    "titulo": "Huerta comunitaria en el campus",
+    "tipo": "Idea",
+    "resumen": "Espacio para cultivar hortalizas gestionado por estudiantes, con app para asignar turnos de riego y cosecha.",
+    "descripcion": "Busca fomentar la sostenibilidad y ofrecer alimentos frescos a la comunidad estudiantil.",
+    "problema": "No hay espacios verdes productivos dentro del campus.",
+    "beneficiarios": "Comunidad estudiantil y comedor institucional.",
+    "categoria": "Medio ambiente",
+    "competencias": ["Gestión de proyectos", "Redacción"],
+    "participantesEstimados": 6,
+    "visibilidad": "publica",
+    "etiquetas": ["sostenibilidad", "huerta"],
+    "autor": "Luis Chacón",
+    "fechaPublicacion": "2026-08-15",
+    "estado": "Abierta",
+    "equipo": [
+      { "nombre": "Luis Chacón", "rol": "Líder de proyecto" }
+    ]
+  },
+  {
+    "id": 5,
+    "titulo": "Marketplace de servicios estudiantiles",
+    "tipo": "Necesidad",
+    "resumen": "Plataforma para que estudiantes ofrezcan servicios como diseño, tutorías o fotografía dentro del campus.",
+    "descripcion": "Incluye perfiles, calificaciones y un catálogo filtrable por tipo de servicio.",
+    "problema": "Los estudiantes que ofrecen servicios no tienen un canal formal para promocionarse.",
+    "beneficiarios": "Estudiantes emprendedores y quienes buscan sus servicios.",
+    "categoria": "Emprendimiento",
+    "competencias": ["React", "Marketing digital"],
+    "participantesEstimados": 4,
+    "visibilidad": "publica",
+    "etiquetas": ["emprendimiento", "servicios"],
+    "autor": "Fernanda Solís",
+    "fechaPublicacion": "2026-08-12",
+    "estado": "Abierta",
+    "equipo": [
+      { "nombre": "Fernanda Solís", "rol": "Líder de proyecto" }
+    ]
+  },
+  {
+    "id": 6,
+    "titulo": "Optimizar el sistema de rutas de buses institucionales",
+    "tipo": "Reto",
+    "resumen": "Analizar y proponer mejoras a las rutas de transporte del TEC usando datos reales de uso.",
+    "descripcion": "Se necesita un equipo que recopile datos de ocupación y proponga horarios y paradas optimizadas.",
+    "problema": "Varias rutas van casi vacías mientras otras se saturan en las mismas horas.",
+    "beneficiarios": "Estudiantes que dependen del transporte institucional.",
+    "categoria": "Gestión comunitaria",
+    "competencias": ["Análisis de datos", "Bases de datos"],
+    "participantesEstimados": 4,
+    "visibilidad": "restringida",
+    "etiquetas": ["transporte", "datos"],
+    "autor": "Kevin Mora",
+    "fechaPublicacion": "2026-08-10",
+    "estado": "En progreso",
+    "equipo": [
+      { "nombre": "Kevin Mora", "rol": "Líder de proyecto" },
+      { "nombre": "Paula Rojas", "rol": "Análisis de datos" }
+    ]
+  },
+  {
+    "id": 7,
+    "titulo": "Banco de apuntes colaborativo",
+    "tipo": "Idea",
+    "resumen": "Repositorio donde estudiantes suben y consultan apuntes organizados por curso y profesor.",
+    "descripcion": "Incluye sistema de votos para destacar los mejores apuntes de cada curso.",
+    "problema": "Los apuntes se comparten de forma desordenada por chats y redes sociales.",
+    "beneficiarios": "Estudiantes de todas las carreras.",
+    "categoria": "Educación",
+    "competencias": ["Node.js", "Diseño de interfaces"],
+    "participantesEstimados": 3,
+    "visibilidad": "publica",
+    "etiquetas": ["educacion", "apuntes"],
+    "autor": "Gabriel Herrera",
+    "fechaPublicacion": "2026-08-05",
+    "estado": "Abierta",
+    "equipo": [
+      { "nombre": "Gabriel Herrera", "rol": "Líder de proyecto" }
+    ]
+  },
+  {
+    "id": 8,
+    "titulo": "Campaña de reciclaje electrónico en el campus",
+    "tipo": "Necesidad",
+    "resumen": "Puntos de acopio y app para agendar la entrega de dispositivos electrónicos en desuso.",
+    "descripcion": "Se necesita coordinar recolección, aliados de reciclaje certificado y comunicación de la campaña.",
+    "problema": "No existe un canal formal para desechar responsablemente equipo electrónico en el campus.",
+    "beneficiarios": "Comunidad estudiantil y administrativa.",
+    "categoria": "Medio ambiente",
+    "competencias": ["Marketing digital", "Gestión de proyectos"],
+    "participantesEstimados": 5,
+    "visibilidad": "publica",
+    "etiquetas": ["reciclaje", "sostenibilidad"],
+    "autor": "Valeria Núñez",
+    "fechaPublicacion": "2026-08-02",
+    "estado": "Abierta",
+    "equipo": [
+      { "nombre": "Valeria Núñez", "rol": "Líder de proyecto" }
+    ]
+  }
+]
