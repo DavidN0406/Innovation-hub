@@ -43,6 +43,7 @@ _(ver la tabla al final de este archivo)_
 | 14 | 2026-09-25 | 1b896ff | feat(datos): usuarios de ejemplo para el perfil |
 | 15 | 2026-09-25 | 1a937df | feat(js): modulo de validacion reutilizable |
 | 16 | 2026-09-25 | 3b9a61a | feat(js): modulos nav y almacenamiento local |
+| 17 | 2026-09-25 | 3391df2 | feat(datos): iniciativas, categorias y competencias en JSON |
 
 <!-- FIN TABLA COMMITS -->
 
