@@ -47,6 +47,7 @@ _(ver la tabla al final de este archivo)_
 | 18 | 2026-09-25 | 5588637 | feat(js): carga con fetch y estados de carga, error y vacio |
 | 19 | 2026-09-25 | 42365fe | fix: agregar contenido faltante a scss y datos JSON |
 | 20 | 2026-09-25 | bd9f1d7 | fix: corregir nombre de validacion.js |
+| 21 | 2026-09-25 | da7cc9f | feat(home): pagina principal con explicacion del sistema |
 
 <!-- FIN TABLA COMMITS -->
 
