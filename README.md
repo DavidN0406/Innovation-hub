@@ -48,6 +48,7 @@ _(ver la tabla al final de este archivo)_
 | 19 | 2026-09-25 | 42365fe | fix: agregar contenido faltante a scss y datos JSON |
 | 20 | 2026-09-25 | bd9f1d7 | fix: corregir nombre de validacion.js |
 | 21 | 2026-09-25 | da7cc9f | feat(home): pagina principal con explicacion del sistema |
+| 22 | 2026-09-25 | ae9e2dd | feat(catalogo): tarjetas de iniciativas generadas desde datos |
 
 <!-- FIN TABLA COMMITS -->
 
