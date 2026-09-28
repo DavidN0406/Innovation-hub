@@ -48,8 +48,16 @@
 
   <section aria-labelledby="titulo-resultados">
     <h2 id="titulo-resultados" data-titulo-resultados>Cargando iniciativas...</h2>
+    <p role="status" data-aviso-catalogo></p>
     <div data-lista-iniciativas></div>
   </section>
+
+  <dialog data-modal-eliminar aria-labelledby="titulo-modal-eliminar">
+    <h2 id="titulo-modal-eliminar">Eliminar iniciativa</h2>
+    <p data-texto-modal></p>
+    <button type="button" data-confirmar-eliminar>Sí, eliminar</button>
+    <button type="button" data-cancelar-eliminar>Cancelar</button>
+  </dialog>
 
   <footer>
     <p>Innovation Hub · Universidad CENFOTEC</p>
@@ -57,6 +65,7 @@
   </footer>
 
   <script src="../js/datos.js"></script>
+  <script src="../js/almacenamiento.js"></script>
   <script src="../js/nav.js"></script>
   <script src="../js/catalogo.js"></script>
 </body>

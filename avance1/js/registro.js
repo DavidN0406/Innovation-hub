@@ -1,8 +1,12 @@
-// Pantalla de registro: selectores desde JSON, competencias dinámicas, validación por campo y guardado local.
+// Pantalla de registro y edición: selectores desde JSON, competencias dinámicas, validación por campo y guardado local.
 const RUTA_CATEGORIAS = "../datos/categorias.json";
 const RUTA_COMPETENCIAS = "../datos/competencias.json";
 const RUTA_INICIATIVAS = "../datos/iniciativas.json";
 const AUTOR_ACTUAL = "Jorge Garcia Nuñez";
+
+// Si la URL trae ?editar=ID, el formulario modifica esa iniciativa en vez de crear una nueva
+const parametroEditar = new URLSearchParams(window.location.search).get("editar");
+const idEdicion = parametroEditar ? Number(parametroEditar) : null;
 
 // Competencias elegidas en esta sesión del formulario
 let competenciasElegidas = [];
@@ -125,22 +129,23 @@ async function cargarSelectores() {
   llenarSelect(selectCompetencias, competencias.datos);
 }
 
-// --- Guardado local ---
+// --- Datos guardados ---
 
-async function guardarNuevaIniciativa() {
-  // Base: lo guardado en localStorage, o el JSON si todavía no hay nada guardado
-  let lista = leerIniciativas();
-  if (!lista) {
-    const resultado = await cargarDatos(RUTA_INICIATIVAS);
-    if (resultado.estado === "error") return false;
-    lista = resultado.datos;
-  }
+// Base: lo guardado en localStorage, o el JSON si todavía no hay nada guardado
+async function obtenerLista() {
+  const guardada = leerIniciativas();
+  if (guardada) return guardada;
+
+  const resultado = await cargarDatos(RUTA_INICIATIVAS);
+  return resultado.estado === "error" ? null : resultado.datos;
+}
+
+async function guardarIniciativa() {
+  const lista = await obtenerLista();
+  if (!lista) return false;
 
   const valor = (id) => document.getElementById(id).value.trim();
-  const nuevoId = lista.reduce((max, i) => Math.max(max, i.id), 0) + 1;
-
-  lista.push({
-    id: nuevoId,
+  const datos = {
     titulo: valor("titulo"),
     tipo: valor("tipo"),
     resumen: valor("resumen"),
@@ -151,22 +156,70 @@ async function guardarNuevaIniciativa() {
     competencias: [...competenciasElegidas],
     participantesEstimados: Number(valor("participantes")),
     visibilidad: valor("visibilidad"),
-    etiquetas: valor("etiquetas").split(",").map((e) => e.trim()).filter(Boolean),
-    autor: AUTOR_ACTUAL,
-    fechaPublicacion: new Date().toLocaleDateString("en-CA"), // AAAA-MM-DD
-    estado: "Abierta",
-    equipo: [{ nombre: AUTOR_ACTUAL, rol: "Líder de proyecto" }]
-  });
+    etiquetas: valor("etiquetas").split(",").map((e) => e.trim()).filter(Boolean)
+  };
+
+  if (idEdicion !== null) {
+    // Modificar: se conservan id, autor, fecha, estado y equipo
+    const indice = lista.findIndex((i) => i.id === idEdicion);
+    if (indice === -1) return false;
+    lista[indice] = { ...lista[indice], ...datos };
+  } else {
+    const nuevoId = lista.reduce((max, i) => Math.max(max, i.id), 0) + 1;
+    lista.push({
+      id: nuevoId,
+      ...datos,
+      autor: AUTOR_ACTUAL,
+      fechaPublicacion: new Date().toLocaleDateString("en-CA"), // AAAA-MM-DD
+      estado: "Abierta",
+      equipo: [{ nombre: AUTOR_ACTUAL, rol: "Líder de proyecto" }]
+    });
+  }
 
   guardarIniciativas(lista);
   return true;
 }
 
+// --- Modo edición ---
+
+function rellenarFormulario(iniciativa) {
+  const poner = (id, valor) => { document.getElementById(id).value = valor; };
+  poner("titulo", iniciativa.titulo);
+  poner("tipo", iniciativa.tipo);
+  poner("categoria", iniciativa.categoria);
+  poner("resumen", iniciativa.resumen);
+  poner("descripcion", iniciativa.descripcion);
+  poner("problema", iniciativa.problema);
+  poner("beneficiarios", iniciativa.beneficiarios);
+  poner("participantes", iniciativa.participantesEstimados);
+  poner("visibilidad", iniciativa.visibilidad);
+  poner("etiquetas", (iniciativa.etiquetas || []).join(", "));
+
+  competenciasElegidas = [...iniciativa.competencias];
+  pintarCompetencias();
+}
+
+async function prepararEdicion() {
+  if (idEdicion === null) return;
+
+  const lista = await obtenerLista();
+  const iniciativa = lista ? lista.find((i) => i.id === idEdicion) : null;
+
+  if (!iniciativa) {
+    avisarProblemaRegistro("No se encontró la iniciativa que querés modificar.");
+    document.querySelector("[data-form-registro]").hidden = true;
+    return;
+  }
+
+  document.title = "Modificar iniciativa — Innovation Hub";
+  document.querySelector("h1").textContent = "Modificar iniciativa";
+  document.querySelector("[data-form-registro] [type='submit']").textContent = "Guardar cambios";
+  rellenarFormulario(iniciativa);
+}
+
 // --- Eventos (un solo escucha por tipo, con delegación) ---
 
 function iniciarRegistro() {
-  cargarSelectores();
-
   const formulario = document.querySelector("[data-form-registro]");
 
   formulario.addEventListener("click", (evento) => {
@@ -195,10 +248,16 @@ function iniciarRegistro() {
       return;
     }
 
-    const guardada = await guardarNuevaIniciativa();
+    const guardada = await guardarIniciativa();
     if (!guardada) {
       aviso.textContent = "No se pudo guardar la iniciativa. Intenta de nuevo.";
       aviso.hidden = false;
+      return;
+    }
+
+    if (idEdicion !== null) {
+      // Al terminar de modificar se vuelve al catálogo, que ya muestra el cambio
+      window.location.href = "catalogo.html";
       return;
     }
 
@@ -209,6 +268,9 @@ function iniciarRegistro() {
     aviso.textContent = "Iniciativa registrada. Ya puedes verla en el catálogo.";
     aviso.hidden = false;
   });
+
+  // Primero se llenan los selectores; después, si es edición, se cargan los datos
+  cargarSelectores().then(prepararEdicion);
 }
 
 iniciarRegistro();
