@@ -3,63 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Coordinar voluntarios universitarios — Innovation Hub</title>
+  <title>Detalle de iniciativa — Innovation Hub</title>
+  <link rel="stylesheet" href="../css/main.css">
+ 
 </head>
 <body>
 
   <header>
     <a href="../index.html">Innovation Hub</a>
-    <nav aria-label="Principal">
-      <ul>
-        <li><a href="catalogo.html">Catálogo</a></li>
-        <li><a href="publicar.html">Publicar iniciativa</a></li>
-        <li><a href="proyectos.html">Proyectos</a></li>
-        <li><a href="perfil.html">Mi perfil</a></li>
-        <li><a href="solicitudes.html">Mis solicitudes</a></li>
-      </ul>
-    </nav>
+    <nav aria-label="Principal" data-nav></nav>
   </header>
 
   <main>
-    <h1>Coordinar voluntarios universitarios</h1>
+    <p id="estadoCarga" role="status">Cargando iniciativa…</p>
+    <p id="estadoError" role="alert" hidden></p>
 
-    <p>Idea · Gestión comunitaria</p>
+    <article id="contenido" hidden>
+      <h1 id="titulo"></h1>
+      <p id="tipoCategoria"></p>
 
-    <p>Plataforma para publicar turnos de voluntariado, asignar
-      participantes y registrar las horas cumplidas. Cada coordinador podrá
-      crear turnos, definir el número de cupos y llevar un registro de las
-      horas acumuladas por cada voluntario a lo largo del semestre.</p>
+      <p>
+        <span id="estado" class="estado"></span>
+        · Visibilidad: <span id="visibilidad"></span>
+      </p>
 
-    <p>Publicado por <strong>Ana Rojas</strong> el
-      <time datetime="2026-08-24">24 de agosto de 2026</time></p>
+      <section>
+        <h2>Resumen</h2>
+        <p id="resumen"></p>
+      </section>
 
-    <h2>Competencias requeridas</h2>
-    <ul>
-      <li>React</li>
-      <li>Diseño de interfaces</li>
-    </ul>
+      <p id="avisoRestringida" role="note" hidden>
+        <span aria-hidden="true">🔒</span>
+        <strong>Contenido restringido.</strong>
+        El contenido completo de esta iniciativa no está disponible.
+        Solo se muestra su resumen.
+      </p>
 
-    <h2>Equipo</h2>
-    <ul>
-      <li>Ana Rojas — Líder de proyecto</li>
-      <li>Diego Salas — Desarrollo frontend</li>
-      <li>Karla Jiménez — Diseño de interfaces</li>
-    </ul>
+      <div id="contenidoCompleto">
+        <section>
+          <h2>Descripción</h2>
+          <p id="descripcion"></p>
+          <p>Publicado por <strong id="autor"></strong> el
+            <time id="fechaPublicacion"></time></p>
+        </section>
 
-    <p>
-      <span class="estado">
-        <span aria-hidden="true">●</span> En progreso
-      </span>
-      · 3 de 5 miembros
-    </p>
+        <section>
+          <h2>Competencias requeridas</h2>
+          <ul id="competencias"></ul>
+        </section>
 
-    <p>Visibilidad: Pública</p>
-  </main>
+        <section>
+          <h2>Equipo</h2>
+          <ul id="equipo"></ul>
+          <p id="miembros"></p>
+        </section>
+      </div>
+    </article>
+      </main>
 
   <footer>
     <p>Innovation Hub · Universidad CENFOTEC</p>
     <p><a href="mailto:hub@ejemplo.ac.cr">hub@ejemplo.ac.cr</a></p>
   </footer>
 
+  <script src="../js/nav.js"></script>
+  <script src="../js/datos.js"></script>
+  <script src="../js/almacenamiento.js"></script>
+  <script src="../js/detalle.js"></script>
 </body>
 </html>
