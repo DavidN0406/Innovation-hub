@@ -13,9 +13,10 @@ function mostrarError(mensaje) {
   error.hidden = false;
 }
 
-function llenarLista(idLista, textos) {
+function llenarLista(idLista, textos, clase) {
   const items = textos.map((texto) => {
     const li = document.createElement("li");
+    li.className = clase;
     li.textContent = texto;
     return li;
   });
@@ -41,10 +42,11 @@ function pintarProyectos(usuario, iniciativas) {
 
   const items = participaciones.map(({ ini, miembro }) => {
     const li = document.createElement("li");
+    li.className = "list-group-item";
     const enlace = document.createElement("a");
     enlace.href = `detalle.html?id=${ini.id}`;
     enlace.textContent = ini.titulo;
-    li.append(enlace, ` — ${miembro.rol} · ${ini.estado}`);
+    li.append(enlace, ` - ${miembro.rol} · ${ini.estado}`);
     return li;
   });
   porId("proyectos").replaceChildren(...items);
@@ -57,8 +59,8 @@ function pintarPerfil(usuario, iniciativas) {
   correo.href = `mailto:${usuario.correo}`;
   porId("rol").textContent = usuario.rol;
 
-  llenarLista("competencias", usuario.competencias);
-  llenarLista("intereses", usuario.intereses);
+  llenarLista("competencias", usuario.competencias, "badge text-bg-primary");
+  llenarLista("intereses", usuario.intereses, "badge text-bg-light border");
   pintarProyectos(usuario, iniciativas);
 
   porId("estadoCarga").hidden = true;

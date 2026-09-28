@@ -1,0 +1,9 @@
+// Estilos del detalle de iniciativa
+
+#contenido > h1 {
+  color: $primary;
+}
+
+#avisoRestringida {
+  border-left: 0.5rem solid $warning;
+}

@@ -3,67 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Catálogo de iniciativas — Innovation Hub</title>
+  <title>Catálogo de iniciativas - Innovation Hub</title>
   <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
 
   <header>
-    <a href="../index.html">Innovation Hub</a>
     <nav data-nav aria-label="Principal"></nav>
   </header>
 
-  <main>
-    <h1>Catálogo de iniciativas</h1>
+  <main class="container">
+    <h1 class="mb-4">Catálogo de iniciativas</h1>
 
-    <aside aria-labelledby="titulo-filtros">
-      <h2 id="titulo-filtros">Filtrar iniciativas</h2>
-      <form data-form-filtros>
-        <p>
-          <label for="filtro-texto">Buscar</label>
-          <input type="text" id="filtro-texto" name="texto">
-        </p>
-        <p>
-          <label for="filtro-tipo">Tipo</label>
-          <select id="filtro-tipo" name="tipo">
-            <option value="">Todos</option>
-            <option value="Idea">Idea</option>
-            <option value="Necesidad">Necesidad</option>
-            <option value="Reto">Reto</option>
-          </select>
-        </p>
-        <p>
-          <label for="filtro-categoria">Categoría</label>
-          <select id="filtro-categoria" name="categoria" data-select-categorias>
-            <option value="">Todas</option>
-          </select>
-        </p>
-        <p>
-          <label for="filtro-competencia">Competencia requerida</label>
-          <select id="filtro-competencia" name="competencia" data-select-competencias>
-            <option value="">Todas</option>
-          </select>
-        </p>
-      </form>
-    </aside>
+    <div class="row g-4">
 
-    <section aria-labelledby="titulo-resultados">
-      <h2 id="titulo-resultados" data-titulo-resultados>Cargando iniciativas...</h2>
-      <p role="status" data-aviso-catalogo></p>
-      <div data-lista-iniciativas></div>
-    </section>
+      <aside class="col-12 col-lg-3" aria-labelledby="titulo-filtros">
+        <div class="card">
+          <div class="card-body">
+            <h2 id="titulo-filtros" class="h5 card-title">Filtrar iniciativas</h2>
+            <form data-form-filtros>
+              <div class="mb-3">
+                <label for="filtro-texto" class="form-label">Buscar</label>
+                <input type="text" id="filtro-texto" name="texto" class="form-control">
+              </div>
+              <div class="mb-3">
+                <label for="filtro-tipo" class="form-label">Tipo</label>
+                <select id="filtro-tipo" name="tipo" class="form-select">
+                  <option value="">Todos</option>
+                  <option value="Idea">Idea</option>
+                  <option value="Necesidad">Necesidad</option>
+                  <option value="Reto">Reto</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="filtro-categoria" class="form-label">Categoría</label>
+                <select id="filtro-categoria" name="categoria" class="form-select" data-select-categorias>
+                  <option value="">Todas</option>
+                </select>
+              </div>
+              <div class="mb-0">
+                <label for="filtro-competencia" class="form-label">Competencia requerida</label>
+                <select id="filtro-competencia" name="competencia" class="form-select" data-select-competencias>
+                  <option value="">Todas</option>
+                </select>
+              </div>
+            </form>
+          </div>
+        </div>
+      </aside>
+
+      <section class="col-12 col-lg-9" aria-labelledby="titulo-resultados">
+        <h2 id="titulo-resultados" class="h4 mb-3" data-titulo-resultados>Cargando iniciativas...</h2>
+        <p role="status" class="fw-semibold" data-aviso-catalogo></p>
+        <div class="row g-4" data-lista-iniciativas></div>
+      </section>
+
+    </div>
   </main>
 
   <dialog data-modal-eliminar aria-labelledby="titulo-modal-eliminar">
-    <h2 id="titulo-modal-eliminar">Eliminar iniciativa</h2>
+    <h2 id="titulo-modal-eliminar" class="h5">Eliminar iniciativa</h2>
     <p data-texto-modal></p>
-    <button type="button" data-confirmar-eliminar>Sí, eliminar</button>
-    <button type="button" data-cancelar-eliminar>Cancelar</button>
+    <div class="d-flex gap-2 justify-content-end">
+      <button type="button" class="btn btn-danger" data-confirmar-eliminar>Sí, eliminar</button>
+      <button type="button" class="btn btn-outline-secondary" data-cancelar-eliminar>Cancelar</button>
+    </div>
   </dialog>
 
-  <footer>
-    <p>Innovation Hub · Universidad CENFOTEC</p>
-    <p><a href="mailto:hub@ejemplo.ac.cr">hub@ejemplo.ac.cr</a></p>
+  <footer class="container border-top py-4 mt-5">
+    <p class="mb-0 text-body-secondary">Innovation Hub · Universidad CENFOTEC</p>
   </footer>
 
   <script src="../js/datos.js"></script>

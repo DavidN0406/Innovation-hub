@@ -11860,37 +11860,81 @@ textarea.form-control-lg {
   }
 }
 header {
-  background-color: #1f4e8c;
-  padding: 1rem;
   margin-bottom: 2rem;
 }
 
-header a:first-child {
-  color: white;
+.navbar-brand {
   font-weight: 600;
-  font-size: 1.25rem;
-  text-decoration: none;
+  letter-spacing: 0.02em;
 }
 
-nav[data-nav] ul {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  padding: 0;
-  margin: 0.5rem 0 0 0;
+.navbar .nav-link[aria-current=page] {
+  font-weight: 600;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.8);
 }
 
-nav[data-nav] a {
-  color: white;
-  text-decoration: none;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
+.hero {
+  background-color: #f6f8fb;
+  border-left: 0.5rem solid #1f4e8c;
+  border-radius: 0.75rem;
 }
 
-nav[data-nav] a:hover,
-nav[data-nav] a[aria-current=page] {
-  background-color: rgba(255, 255, 255, 0.15);
+.tarjeta-iniciativa {
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.tarjeta-iniciativa:hover {
+  box-shadow: 0 0.5rem 1rem rgba(28, 36, 48, 0.12);
+}
+
+.tarjeta-iniciativa .card-title {
+  color: #1f4e8c;
+}
+
+dialog[data-modal-eliminar] {
+  border: 0;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  max-width: 28rem;
+  box-shadow: 0 1rem 3rem rgba(28, 36, 48, 0.3);
+}
+
+dialog[data-modal-eliminar]::backdrop {
+  background-color: rgba(28, 36, 48, 0.5);
+}
+
+#contenido > h1, #contenido > .h1 {
+  color: #1f4e8c;
+}
+
+#avisoRestringida {
+  border-left: 0.5rem solid #b26b00;
+}
+
+legend {
+  color: #1f4e8c;
+}
+
+[aria-invalid=true] {
+  border-color: #b3261e;
+}
+
+[aria-invalid=true]:focus {
+  box-shadow: 0 0 0 0.2rem rgba(179, 38, 30, 0.25);
+}
+
+[data-lista-competencias]:empty {
+  display: none;
+}
+
+#contenido dt {
+  color: #5b6770;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+#contenido dd {
+  margin-bottom: 1rem;
 }
 
 /*# sourceMappingURL=main.css.map */

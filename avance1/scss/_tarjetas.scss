@@ -1,1 +1,25 @@
-// Estilos de las tarjetas del catalogo
+// Estilos de las tarjetas del catalogo y del modal de confirmacion
+
+.tarjeta-iniciativa {
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.tarjeta-iniciativa:hover {
+  box-shadow: 0 0.5rem 1rem rgba($dark, 0.12);
+}
+
+.tarjeta-iniciativa .card-title {
+  color: $primary;
+}
+
+dialog[data-modal-eliminar] {
+  border: 0;
+  border-radius: $border-radius-lg;
+  padding: $spacer * 1.5;
+  max-width: 28rem;
+  box-shadow: 0 1rem 3rem rgba($dark, 0.3);
+}
+
+dialog[data-modal-eliminar]::backdrop {
+  background-color: rgba($dark, 0.5);
+}

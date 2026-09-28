@@ -57,9 +57,11 @@ function pintarCompetencias() {
   const lista = document.querySelector("[data-lista-competencias]");
   const items = competenciasElegidas.map((competencia) => {
     const li = document.createElement("li");
-    li.append(`${competencia} `);
+    li.className = "list-group-item d-flex justify-content-between align-items-center";
+    li.append(competencia);
     const boton = document.createElement("button");
     boton.type = "button";
+    boton.className = "btn btn-sm btn-outline-danger";
     boton.textContent = "Quitar";
     boton.dataset.quitar = competencia;
     boton.setAttribute("aria-label", `Quitar ${competencia}`);
@@ -211,7 +213,7 @@ async function prepararEdicion() {
     return;
   }
 
-  document.title = "Modificar iniciativa — Innovation Hub";
+  document.title = "Modificar iniciativa - Innovation Hub";
   document.querySelector("h1").textContent = "Modificar iniciativa";
   document.querySelector("[data-form-registro] [type='submit']").textContent = "Guardar cambios";
   rellenarFormulario(iniciativa);

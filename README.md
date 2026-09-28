@@ -58,6 +58,7 @@ _(ver la tabla al final de este archivo)_
 | 29 | 2026-09-27 | 283333b | feat(perfil): pagina de perfil de usuario |
 | 30 | 2026-09-27 | fbbfba9 | feat(solicitud): formulario de solicitud de participacion |
 | 31 | 2026-09-27 | 93811f8 | fix(a11y): labels, alt y contraste en paginas propias |
+| 32 | 2026-09-27 | 3407f7c | feat(nav): navbar de Bootstrap con menu colapsable generada desde nav.js |
 
 <!-- FIN TABLA COMMITS -->
 

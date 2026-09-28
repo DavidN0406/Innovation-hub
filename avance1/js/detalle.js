@@ -18,9 +18,10 @@ function formatearFecha(iso) {
   });
 }
 
-function llenarLista(idLista, textos) {
+function llenarLista(idLista, textos, clase) {
   const items = textos.map((texto) => {
     const li = document.createElement("li");
+    li.className = clase;
     li.textContent = texto;
     return li;
   });
@@ -53,8 +54,8 @@ function pintarDetalle(ini) {
     const fecha = porId("fechaPublicacion");
     fecha.textContent = formatearFecha(ini.fechaPublicacion);
     fecha.dateTime = ini.fechaPublicacion;
-    llenarLista("competencias", ini.competencias);
-    llenarLista("equipo", ini.equipo.map((m) => `${m.nombre} — ${m.rol}`));
+    llenarLista("competencias", ini.competencias, "badge text-bg-light border");
+    llenarLista("equipo", ini.equipo.map((m) => `${m.nombre} - ${m.rol}`), "list-group-item");
     porId("miembros").textContent =
       `${ini.equipo.length} de ${ini.participantesEstimados} miembros`;
   }

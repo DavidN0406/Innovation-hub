@@ -3,56 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mi perfil — Innovation Hub</title>
+  <title>Mi perfil - Innovation Hub</title>
   <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
 
   <header>
-    <a href="../index.html">Innovation Hub</a>
     <nav data-nav aria-label="Principal"></nav>
   </header>
 
-  <main>
-    <h1>Mi perfil</h1>
+  <main class="container">
+    <h1 class="mb-4">Mi perfil</h1>
 
     <p id="estadoCarga" role="status">Cargando perfil…</p>
-    <p id="estadoError" role="alert" hidden></p>
+    <p id="estadoError" role="alert" class="alert alert-danger" hidden></p>
 
     <div id="contenido" hidden>
-      <section aria-labelledby="titulo-personal">
-        <h2 id="titulo-personal">Información personal</h2>
-        <dl>
-          <dt>Nombre</dt>
-          <dd id="nombre"></dd>
-          <dt>Correo</dt>
-          <dd><a id="correo" href="#"></a></dd>
-          <dt>Rol</dt>
-          <dd id="rol"></dd>
-        </dl>
-      </section>
+      <div class="row g-4">
 
-      <section aria-labelledby="titulo-competencias">
-        <h2 id="titulo-competencias">Competencias</h2>
-        <ul id="competencias"></ul>
-      </section>
+        <section class="col-12 col-md-5 col-lg-4" aria-labelledby="titulo-personal">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 id="titulo-personal" class="h4 card-title">Información personal</h2>
+              <dl class="mb-0">
+                <dt>Nombre</dt>
+                <dd id="nombre"></dd>
+                <dt>Correo</dt>
+                <dd><a id="correo" href="#"></a></dd>
+                <dt>Rol</dt>
+                <dd id="rol" class="mb-0"></dd>
+              </dl>
+            </div>
+          </div>
+        </section>
 
-      <section aria-labelledby="titulo-intereses">
-        <h2 id="titulo-intereses">Intereses</h2>
-        <ul id="intereses"></ul>
-      </section>
+        <div class="col-12 col-md-7 col-lg-8">
+          <section class="card mb-4" aria-labelledby="titulo-competencias">
+            <div class="card-body">
+              <h2 id="titulo-competencias" class="h4 card-title">Competencias</h2>
+              <ul id="competencias" class="list-unstyled d-flex flex-wrap gap-2 mb-0"></ul>
+            </div>
+          </section>
 
-      <section aria-labelledby="titulo-proyectos">
-        <h2 id="titulo-proyectos">Proyectos en los que participo</h2>
-        <p id="sinProyectos" hidden>Todavía no participas en ningún proyecto.</p>
-        <ul id="proyectos"></ul>
-      </section>
+          <section class="card mb-4" aria-labelledby="titulo-intereses">
+            <div class="card-body">
+              <h2 id="titulo-intereses" class="h4 card-title">Intereses</h2>
+              <ul id="intereses" class="list-unstyled d-flex flex-wrap gap-2 mb-0"></ul>
+            </div>
+          </section>
+
+          <section class="card" aria-labelledby="titulo-proyectos">
+            <div class="card-body pb-0">
+              <h2 id="titulo-proyectos" class="h4 card-title">Proyectos en los que participo</h2>
+              <p id="sinProyectos" hidden>Todavía no participas en ningún proyecto.</p>
+            </div>
+            <ul id="proyectos" class="list-group list-group-flush"></ul>
+          </section>
+        </div>
+
+      </div>
     </div>
   </main>
 
-  <footer>
-    <p>Innovation Hub · Universidad CENFOTEC</p>
-    <p><a href="mailto:hub@ejemplo.ac.cr">hub@ejemplo.ac.cr</a></p>
+  <footer class="container border-top py-4 mt-5">
+    <p class="mb-0 text-body-secondary">Innovation Hub · Universidad CENFOTEC</p>
   </footer>
 
   <script src="../js/datos.js"></script>

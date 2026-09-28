@@ -1,1 +1,7 @@
 // Estilos de la pagina principal
+
+.hero {
+  background-color: $light;
+  border-left: 0.5rem solid $primary;
+  border-radius: $border-radius-lg;
+}

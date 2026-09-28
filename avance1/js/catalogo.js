@@ -12,44 +12,76 @@ function crearElemento(etiqueta, texto) {
 
 // Se construye con textContent (no innerHTML) porque ahora hay datos escritos por el usuario.
 function crearTarjeta(iniciativa) {
-  const articulo = document.createElement("article");
-  articulo.classList.add("tarjeta-iniciativa");
+  const columna = document.createElement("div");
+  columna.className = "col-12 col-md-6 col-xl-4";
 
-  articulo.appendChild(crearElemento("h3", iniciativa.titulo));
-  articulo.appendChild(crearElemento("p", `${iniciativa.tipo} · ${iniciativa.categoria}`));
-  articulo.appendChild(crearElemento("p", iniciativa.resumen));
+  const articulo = document.createElement("article");
+  articulo.className = "card h-100 tarjeta-iniciativa";
+
+  const cuerpo = document.createElement("div");
+  cuerpo.className = "card-body";
+
+  const insignias = document.createElement("p");
+  insignias.className = "mb-2";
+  const insigniaTipo = crearElemento("span", iniciativa.tipo);
+  insigniaTipo.className = "badge text-bg-primary me-1";
+  const insigniaEstado = crearElemento("span", iniciativa.estado);
+  insigniaEstado.className = "badge text-bg-secondary";
+  insignias.append(insigniaTipo, insigniaEstado);
+
+  const titulo = crearElemento("h3", iniciativa.titulo);
+  titulo.className = "h5 card-title";
+
+  const categoria = crearElemento("p", iniciativa.categoria);
+  categoria.className = "small text-body-secondary mb-2";
+
+  const resumen = crearElemento("p", iniciativa.resumen);
+  resumen.className = "card-text";
 
   const autor = document.createElement("p");
+  autor.className = "small mb-3";
   autor.append("Publicado por ");
   autor.appendChild(crearElemento("strong", iniciativa.autor));
-  articulo.appendChild(autor);
 
-  articulo.appendChild(crearElemento("h4", "Competencias requeridas"));
+  const tituloCompetencias = crearElemento("h4", "Competencias requeridas");
+  tituloCompetencias.className = "h6";
+
   const lista = document.createElement("ul");
-  iniciativa.competencias.forEach((c) => lista.appendChild(crearElemento("li", c)));
-  articulo.appendChild(lista);
+  lista.className = "list-unstyled d-flex flex-wrap gap-1 mb-0";
+  iniciativa.competencias.forEach((c) => {
+    const item = crearElemento("li", c);
+    item.className = "badge text-bg-light border";
+    lista.appendChild(item);
+  });
 
-  articulo.appendChild(crearElemento("p", `Estado: ${iniciativa.estado}`));
+  cuerpo.append(insignias, titulo, categoria, resumen, autor, tituloCompetencias, lista);
 
-  const enlaceParrafo = document.createElement("p");
-  const enlace = crearElemento("a", `Ver la iniciativa ${iniciativa.titulo}`);
-  enlace.href = `detalle.html?id=${iniciativa.id}`;
-  enlaceParrafo.appendChild(enlace);
-  articulo.appendChild(enlaceParrafo);
+  const pie = document.createElement("div");
+  pie.className = "card-footer d-flex flex-wrap gap-2";
 
-  const acciones = document.createElement("p");
-  const botonEliminar = crearElemento("button", "Eliminar");
-  botonEliminar.type = "button";
-  botonEliminar.dataset.eliminar = iniciativa.id;
-  botonEliminar.setAttribute("aria-label", `Eliminar ${iniciativa.titulo}`);
+  const enlaceDetalle = crearElemento("a", "Ver detalle");
+  enlaceDetalle.className = "btn btn-primary btn-sm";
+  enlaceDetalle.href = `detalle.html?id=${iniciativa.id}`;
+  enlaceDetalle.setAttribute("aria-label", `Ver detalle de ${iniciativa.titulo}`);
+
   const enlaceModificar = crearElemento("a", "Modificar");
+  enlaceModificar.className = "btn btn-outline-secondary btn-sm";
   enlaceModificar.href = `registro.html?editar=${iniciativa.id}`;
   enlaceModificar.setAttribute("aria-label", `Modificar ${iniciativa.titulo}`);
-  acciones.append(enlaceModificar, " ", botonEliminar);
-  articulo.appendChild(acciones);
 
-  return articulo;
+  const botonEliminar = crearElemento("button", "Eliminar");
+  botonEliminar.type = "button";
+  botonEliminar.className = "btn btn-outline-danger btn-sm";
+  botonEliminar.dataset.eliminar = iniciativa.id;
+  botonEliminar.setAttribute("aria-label", `Eliminar ${iniciativa.titulo}`);
+
+  pie.append(enlaceDetalle, enlaceModificar, botonEliminar);
+
+  articulo.append(cuerpo, pie);
+  columna.appendChild(articulo);
+  return columna;
 }
+
 
 function pintarIniciativas(lista) {
   const contenedor = document.querySelector("[data-lista-iniciativas]");

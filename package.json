@@ -1,17 +1,17 @@
 {
   "name": "innovation-hub",
   "version": "1.0.0",
-  "description": "Proyecto del curso SOFT-12 — Desarrollo Web Full Stack. **Estudiante:** David Navarro **Sección:** SOFT-12-C1 Programación Web Avanzada SCV2 **Periodo:** III cuatrimestre 2026 **Docente:** Alvaro Cordero Peña ## Descripción Aplicación web que permite publicar ideas, necesidades y retos, declarar las competencias que cada iniciativa requiere y conformar equipos interdisciplinarios dentro de la comunidad universitaria. ## Estructura del repositorio - `avance1/` — prototipo con HTML, CSS, JavaScript, Bootstrap y Sass  - `paginas/` — pantallas del prototi  - `datos/` — archivos JSON con datos simulados  - `js/` — módulos de JavaScript  - `scss/` — variables y parciales de Sass  - `css/` — hoja de estilos compilada ## Cómo ejecutar Abrir `avance1/index.html` en el navegador. No requiere instalación. ## Decisiones de diseño _(se completa durante las semanas 2 a 4)_ ## Resumen de commits _(ver la tabla al final de este archivo)_",
+  "description": "Innovation Hub, Avance 1 del proyecto de SOFT-12 Programación web avanzada (Universidad CENFOTEC)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "sass": "sass --quiet --load-path=node_modules avance1/scss/main.scss avance1/css/main.css"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DavidN0406/Innovation-hub.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "David Navarro, Jorge García Núñez",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {

@@ -3,123 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Registrar iniciativa — Innovation Hub</title>
+  <title>Registrar iniciativa - Innovation Hub</title>
   <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
 
   <header>
-    <a href="../index.html">Innovation Hub</a>
     <nav data-nav aria-label="Principal"></nav>
   </header>
 
-  <main>
-    <h1>Registrar iniciativa</h1>
+  <main class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-9 col-xl-8">
 
-    <p id="estadoFormulario" role="alert" hidden></p>
+        <h1 class="mb-4">Registrar iniciativa</h1>
 
-    <form id="formRegistro" data-form-registro novalidate>
+        <p id="estadoFormulario" role="alert" class="alert alert-info" hidden></p>
 
-      <fieldset>
-        <legend>Información general</legend>
+        <form id="formRegistro" data-form-registro novalidate>
 
-        <p>
-          <label for="titulo">Título</label>
-          <input type="text" id="titulo" name="titulo" aria-describedby="error-titulo">
-          <small id="error-titulo" role="alert" hidden></small>
-        </p>
+          <fieldset class="card mb-4">
+            <div class="card-body">
+              <legend class="h5 mb-3">Información general</legend>
 
-        <p>
-          <label for="tipo">Tipo</label>
-          <select id="tipo" name="tipo" aria-describedby="error-tipo">
-            <option value="">Selecciona una opción</option>
-            <option value="Idea">Idea</option>
-            <option value="Necesidad">Necesidad</option>
-            <option value="Reto">Reto</option>
-          </select>
-          <small id="error-tipo" role="alert" hidden></small>
-        </p>
+              <div class="mb-3">
+                <label for="titulo" class="form-label">Título</label>
+                <input type="text" id="titulo" name="titulo" class="form-control" aria-describedby="error-titulo">
+                <small id="error-titulo" class="text-danger" role="alert" hidden></small>
+              </div>
 
-        <p>
-          <label for="categoria">Categoría</label>
-          <select id="categoria" name="categoria" data-select-categorias aria-describedby="error-categoria">
-            <option value="">Selecciona una opción</option>
-          </select>
-          <small id="error-categoria" role="alert" hidden></small>
-        </p>
+              <div class="row g-3 mb-3">
+                <div class="col-12 col-md-6">
+                  <label for="tipo" class="form-label">Tipo</label>
+                  <select id="tipo" name="tipo" class="form-select" aria-describedby="error-tipo">
+                    <option value="">Selecciona una opción</option>
+                    <option value="Idea">Idea</option>
+                    <option value="Necesidad">Necesidad</option>
+                    <option value="Reto">Reto</option>
+                  </select>
+                  <small id="error-tipo" class="text-danger" role="alert" hidden></small>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="categoria" class="form-label">Categoría</label>
+                  <select id="categoria" name="categoria" class="form-select" data-select-categorias aria-describedby="error-categoria">
+                    <option value="">Selecciona una opción</option>
+                  </select>
+                  <small id="error-categoria" class="text-danger" role="alert" hidden></small>
+                </div>
+              </div>
 
-        <p>
-          <label for="resumen">Resumen</label>
-          <textarea id="resumen" name="resumen" rows="3" aria-describedby="error-resumen"></textarea>
-          <small id="error-resumen" role="alert" hidden></small>
-        </p>
+              <div class="mb-3">
+                <label for="resumen" class="form-label">Resumen</label>
+                <textarea id="resumen" name="resumen" rows="3" class="form-control" aria-describedby="error-resumen"></textarea>
+                <small id="error-resumen" class="text-danger" role="alert" hidden></small>
+              </div>
 
-        <p>
-          <label for="descripcion">Descripción</label>
-          <textarea id="descripcion" name="descripcion" rows="5" aria-describedby="error-descripcion"></textarea>
-          <small id="error-descripcion" role="alert" hidden></small>
-        </p>
-      </fieldset>
+              <div class="mb-0">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea id="descripcion" name="descripcion" rows="5" class="form-control" aria-describedby="error-descripcion"></textarea>
+                <small id="error-descripcion" class="text-danger" role="alert" hidden></small>
+              </div>
+            </div>
+          </fieldset>
 
-      <fieldset>
-        <legend>Problema y beneficiarios</legend>
+          <fieldset class="card mb-4">
+            <div class="card-body">
+              <legend class="h5 mb-3">Problema y beneficiarios</legend>
 
-        <p>
-          <label for="problema">Problema identificado</label>
-          <textarea id="problema" name="problema" rows="3" aria-describedby="error-problema"></textarea>
-          <small id="error-problema" role="alert" hidden></small>
-        </p>
+              <div class="mb-3">
+                <label for="problema" class="form-label">Problema identificado</label>
+                <textarea id="problema" name="problema" rows="3" class="form-control" aria-describedby="error-problema"></textarea>
+                <small id="error-problema" class="text-danger" role="alert" hidden></small>
+              </div>
 
-        <p>
-          <label for="beneficiarios">Beneficiarios</label>
-          <input type="text" id="beneficiarios" name="beneficiarios" aria-describedby="error-beneficiarios">
-          <small id="error-beneficiarios" role="alert" hidden></small>
-        </p>
-      </fieldset>
+              <div class="mb-0">
+                <label for="beneficiarios" class="form-label">Beneficiarios</label>
+                <input type="text" id="beneficiarios" name="beneficiarios" class="form-control" aria-describedby="error-beneficiarios">
+                <small id="error-beneficiarios" class="text-danger" role="alert" hidden></small>
+              </div>
+            </div>
+          </fieldset>
 
-      <fieldset>
-        <legend>Participación y visibilidad</legend>
+          <fieldset class="card mb-4">
+            <div class="card-body">
+              <legend class="h5 mb-3">Participación y visibilidad</legend>
 
-        <p>
-          <label for="competencia">Competencias necesarias</label>
-          <select id="competencia" name="competencia" data-select-competencias aria-describedby="error-competencias">
-            <option value="">Selecciona una opción</option>
-          </select>
-          <button type="button" data-agregar-competencia>Agregar competencia</button>
-          <small id="error-competencias" role="alert" hidden></small>
-        </p>
-        <ul data-lista-competencias aria-label="Competencias agregadas"></ul>
+              <div class="mb-3">
+                <label for="competencia" class="form-label">Competencias necesarias</label>
+                <div class="input-group">
+                  <select id="competencia" name="competencia" class="form-select" data-select-competencias aria-describedby="error-competencias">
+                    <option value="">Selecciona una opción</option>
+                  </select>
+                  <button type="button" class="btn btn-outline-primary" data-agregar-competencia>Agregar competencia</button>
+                </div>
+                <small id="error-competencias" class="text-danger" role="alert" hidden></small>
+              </div>
+              <ul class="list-group mb-3" data-lista-competencias aria-label="Competencias agregadas"></ul>
 
-        <p>
-          <label for="participantes">Cantidad estimada de participantes</label>
-          <input type="number" id="participantes" name="participantes" aria-describedby="error-participantes">
-          <small id="error-participantes" role="alert" hidden></small>
-        </p>
+              <div class="row g-3 mb-3">
+                <div class="col-12 col-md-6">
+                  <label for="participantes" class="form-label">Cantidad estimada de participantes</label>
+                  <input type="number" id="participantes" name="participantes" class="form-control" aria-describedby="error-participantes">
+                  <small id="error-participantes" class="text-danger" role="alert" hidden></small>
+                </div>
+                <div class="col-12 col-md-6">
+                  <label for="visibilidad" class="form-label">Nivel de visibilidad</label>
+                  <select id="visibilidad" name="visibilidad" class="form-select" aria-describedby="error-visibilidad">
+                    <option value="">Selecciona una opción</option>
+                    <option value="publica">Pública</option>
+                    <option value="restringida">Restringida</option>
+                  </select>
+                  <small id="error-visibilidad" class="text-danger" role="alert" hidden></small>
+                </div>
+              </div>
 
-        <p>
-          <label for="visibilidad">Nivel de visibilidad</label>
-          <select id="visibilidad" name="visibilidad" aria-describedby="error-visibilidad">
-            <option value="">Selecciona una opción</option>
-            <option value="publica">Pública</option>
-            <option value="restringida">Restringida</option>
-          </select>
-          <small id="error-visibilidad" role="alert" hidden></small>
-        </p>
+              <div class="mb-0">
+                <label for="etiquetas" class="form-label">Etiquetas (separadas por coma)</label>
+                <input type="text" id="etiquetas" name="etiquetas" class="form-control" aria-describedby="error-etiquetas">
+                <small id="error-etiquetas" class="text-danger" role="alert" hidden></small>
+              </div>
+            </div>
+          </fieldset>
 
-        <p>
-          <label for="etiquetas">Etiquetas (separadas por coma)</label>
-          <input type="text" id="etiquetas" name="etiquetas" aria-describedby="error-etiquetas">
-          <small id="error-etiquetas" role="alert" hidden></small>
-        </p>
-      </fieldset>
+          <button type="submit" class="btn btn-primary btn-lg">Registrar iniciativa</button>
+        </form>
 
-      <p><button type="submit">Registrar iniciativa</button></p>
-    </form>
+      </div>
+    </div>
   </main>
 
-  <footer>
-    <p>Innovation Hub · Universidad CENFOTEC</p>
-    <p><a href="mailto:hub@ejemplo.ac.cr">hub@ejemplo.ac.cr</a></p>
+  <footer class="container border-top py-4 mt-5">
+    <p class="mb-0 text-body-secondary">Innovation Hub · Universidad CENFOTEC</p>
   </footer>
 
   <script src="../js/datos.js"></script>
