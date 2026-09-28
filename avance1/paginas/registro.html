@@ -18,41 +18,46 @@
 
     <p id="estadoFormulario" role="alert" hidden></p>
 
-    <form id="formRegistro" data-form-registro>
+    <form id="formRegistro" data-form-registro novalidate>
 
       <fieldset>
         <legend>Información general</legend>
 
         <p>
           <label for="titulo">Título</label>
-          <input type="text" id="titulo" name="titulo">
+          <input type="text" id="titulo" name="titulo" aria-describedby="error-titulo">
+          <small id="error-titulo" role="alert" hidden></small>
         </p>
 
         <p>
           <label for="tipo">Tipo</label>
-          <select id="tipo" name="tipo">
+          <select id="tipo" name="tipo" aria-describedby="error-tipo">
             <option value="">Selecciona una opción</option>
             <option value="Idea">Idea</option>
             <option value="Necesidad">Necesidad</option>
             <option value="Reto">Reto</option>
           </select>
+          <small id="error-tipo" role="alert" hidden></small>
         </p>
 
         <p>
           <label for="categoria">Categoría</label>
-          <select id="categoria" name="categoria" data-select-categorias>
+          <select id="categoria" name="categoria" data-select-categorias aria-describedby="error-categoria">
             <option value="">Selecciona una opción</option>
           </select>
+          <small id="error-categoria" role="alert" hidden></small>
         </p>
 
         <p>
           <label for="resumen">Resumen</label>
-          <textarea id="resumen" name="resumen" rows="3"></textarea>
+          <textarea id="resumen" name="resumen" rows="3" aria-describedby="error-resumen"></textarea>
+          <small id="error-resumen" role="alert" hidden></small>
         </p>
 
         <p>
           <label for="descripcion">Descripción</label>
-          <textarea id="descripcion" name="descripcion" rows="5"></textarea>
+          <textarea id="descripcion" name="descripcion" rows="5" aria-describedby="error-descripcion"></textarea>
+          <small id="error-descripcion" role="alert" hidden></small>
         </p>
       </fieldset>
 
@@ -61,12 +66,14 @@
 
         <p>
           <label for="problema">Problema identificado</label>
-          <textarea id="problema" name="problema" rows="3"></textarea>
+          <textarea id="problema" name="problema" rows="3" aria-describedby="error-problema"></textarea>
+          <small id="error-problema" role="alert" hidden></small>
         </p>
 
         <p>
           <label for="beneficiarios">Beneficiarios</label>
-          <input type="text" id="beneficiarios" name="beneficiarios">
+          <input type="text" id="beneficiarios" name="beneficiarios" aria-describedby="error-beneficiarios">
+          <small id="error-beneficiarios" role="alert" hidden></small>
         </p>
       </fieldset>
 
@@ -75,29 +82,34 @@
 
         <p>
           <label for="competencia">Competencias necesarias</label>
-          <select id="competencia" name="competencia" data-select-competencias>
+          <select id="competencia" name="competencia" data-select-competencias aria-describedby="error-competencias">
             <option value="">Selecciona una opción</option>
           </select>
+          <button type="button" data-agregar-competencia>Agregar competencia</button>
+          <small id="error-competencias" role="alert" hidden></small>
         </p>
-        <ul data-lista-competencias></ul>
+        <ul data-lista-competencias aria-label="Competencias agregadas"></ul>
 
         <p>
           <label for="participantes">Cantidad estimada de participantes</label>
-          <input type="number" id="participantes" name="participantes" min="1">
+          <input type="number" id="participantes" name="participantes" aria-describedby="error-participantes">
+          <small id="error-participantes" role="alert" hidden></small>
         </p>
 
         <p>
           <label for="visibilidad">Nivel de visibilidad</label>
-          <select id="visibilidad" name="visibilidad">
+          <select id="visibilidad" name="visibilidad" aria-describedby="error-visibilidad">
             <option value="">Selecciona una opción</option>
             <option value="publica">Pública</option>
             <option value="restringida">Restringida</option>
           </select>
+          <small id="error-visibilidad" role="alert" hidden></small>
         </p>
 
         <p>
           <label for="etiquetas">Etiquetas (separadas por coma)</label>
-          <input type="text" id="etiquetas" name="etiquetas">
+          <input type="text" id="etiquetas" name="etiquetas" aria-describedby="error-etiquetas">
+          <small id="error-etiquetas" role="alert" hidden></small>
         </p>
       </fieldset>
 
@@ -111,7 +123,9 @@
   </footer>
 
   <script src="../js/datos.js"></script>
+  <script src="../js/almacenamiento.js"></script>
   <script src="../js/nav.js"></script>
+  <script src="../js/validacion.js"></script>
   <script src="../js/registro.js"></script>
 </body>
 </html>
