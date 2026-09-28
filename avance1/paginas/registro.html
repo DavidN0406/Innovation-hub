@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registrar iniciativa — Innovation Hub</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+
+  <header>
+    <a href="../index.html">Innovation Hub</a>
+    <nav data-nav aria-label="Principal"></nav>
+  </header>
+
+  <main>
+    <h1>Registrar iniciativa</h1>
+
+    <p id="estadoFormulario" role="alert" hidden></p>
+
+    <form id="formRegistro" data-form-registro>
+
+      <fieldset>
+        <legend>Información general</legend>
+
+        <p>
+          <label for="titulo">Título</label>
+          <input type="text" id="titulo" name="titulo">
+        </p>
+
+        <p>
+          <label for="tipo">Tipo</label>
+          <select id="tipo" name="tipo">
+            <option value="">Selecciona una opción</option>
+            <option value="Idea">Idea</option>
+            <option value="Necesidad">Necesidad</option>
+            <option value="Reto">Reto</option>
+          </select>
+        </p>
+
+        <p>
+          <label for="categoria">Categoría</label>
+          <select id="categoria" name="categoria" data-select-categorias>
+            <option value="">Selecciona una opción</option>
+          </select>
+        </p>
+
+        <p>
+          <label for="resumen">Resumen</label>
+          <textarea id="resumen" name="resumen" rows="3"></textarea>
+        </p>
+
+        <p>
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" name="descripcion" rows="5"></textarea>
+        </p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Problema y beneficiarios</legend>
+
+        <p>
+          <label for="problema">Problema identificado</label>
+          <textarea id="problema" name="problema" rows="3"></textarea>
+        </p>
+
+        <p>
+          <label for="beneficiarios">Beneficiarios</label>
+          <input type="text" id="beneficiarios" name="beneficiarios">
+        </p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Participación y visibilidad</legend>
+
+        <p>
+          <label for="competencia">Competencias necesarias</label>
+          <select id="competencia" name="competencia" data-select-competencias>
+            <option value="">Selecciona una opción</option>
+          </select>
+        </p>
+        <ul data-lista-competencias></ul>
+
+        <p>
+          <label for="participantes">Cantidad estimada de participantes</label>
+          <input type="number" id="participantes" name="participantes" min="1">
+        </p>
+
+        <p>
+          <label for="visibilidad">Nivel de visibilidad</label>
+          <select id="visibilidad" name="visibilidad">
+            <option value="">Selecciona una opción</option>
+            <option value="publica">Pública</option>
+            <option value="restringida">Restringida</option>
+          </select>
+        </p>
+
+        <p>
+          <label for="etiquetas">Etiquetas (separadas por coma)</label>
+          <input type="text" id="etiquetas" name="etiquetas">
+        </p>
+      </fieldset>
+
+      <p><button type="submit">Registrar iniciativa</button></p>
+    </form>
+  </main>
+
+  <footer>
+    <p>Innovation Hub · Universidad CENFOTEC</p>
+    <p><a href="mailto:hub@ejemplo.ac.cr">hub@ejemplo.ac.cr</a></p>
+  </footer>
+
+  <script src="../js/datos.js"></script>
+  <script src="../js/nav.js"></script>
+  <script src="../js/registro.js"></script>
+</body>
+</html>
