@@ -11,12 +11,14 @@ function inicializarNav() {
   if (!nav) return;
 
   const rutaActual = window.location.pathname.split("/").pop();
+  // Desde index.html (raíz de avance1) las páginas están en paginas/; desde paginas/ no hace falta prefijo.
+  const prefijo = window.location.pathname.includes("/paginas/") ? "" : "paginas/";
   const lista = document.createElement("ul");
 
   enlacesNav.forEach((enlace) => {
     const item = document.createElement("li");
     const link = document.createElement("a");
-    link.href = enlace.href;
+    link.href = prefijo + enlace.href;
     link.textContent = enlace.texto;
 
     if (enlace.href === rutaActual) {

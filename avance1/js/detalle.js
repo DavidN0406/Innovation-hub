@@ -59,6 +59,9 @@ function pintarDetalle(ini) {
       `${ini.equipo.length} de ${ini.participantesEstimados} miembros`;
   }
 
+  // Enlace al formulario de solicitud (también en restringidas: así se pide acceso)
+  porId("enlaceSolicitud").href = `solicitud.html?id=${ini.id}`;
+
   porId("estadoCarga").hidden = true;
   porId("contenido").hidden = false;
 }
@@ -75,7 +78,7 @@ async function iniciarDetalle() {
   if (!lista) {
     const resultado = await cargarDatos(RUTA_INICIATIVAS);
     if (resultado.estado === "error") {
-      mostrarError("No se pudieron cargar los datos. Intentá de nuevo más tarde.");
+      mostrarError("No se pudieron cargar los datos. Intenta de nuevo más tarde.");
       return;
     }
     lista = resultado.datos;
@@ -83,7 +86,7 @@ async function iniciarDetalle() {
 
   const ini = lista.find((i) => i.id === id);
   if (!ini) {
-    mostrarError("La iniciativa que buscás no existe.");
+    mostrarError("La iniciativa que buscas no existe.");
     return;
   }
   pintarDetalle(ini);

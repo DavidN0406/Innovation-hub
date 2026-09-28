@@ -13,44 +13,46 @@
     <nav data-nav aria-label="Principal"></nav>
   </header>
 
-  <h1>Catálogo de iniciativas</h1>
+  <main>
+    <h1>Catálogo de iniciativas</h1>
 
-  <aside aria-labelledby="titulo-filtros">
-    <h2 id="titulo-filtros">Filtrar iniciativas</h2>
-    <form data-form-filtros>
-      <p>
-        <label for="filtro-texto">Buscar</label>
-        <input type="text" id="filtro-texto" name="texto">
-      </p>
-      <p>
-        <label for="filtro-tipo">Tipo</label>
-        <select id="filtro-tipo" name="tipo">
-          <option value="">Todos</option>
-          <option value="Idea">Idea</option>
-          <option value="Necesidad">Necesidad</option>
-          <option value="Reto">Reto</option>
-        </select>
-      </p>
-      <p>
-        <label for="filtro-categoria">Categoría</label>
-        <select id="filtro-categoria" name="categoria" data-select-categorias>
-          <option value="">Todas</option>
-        </select>
-      </p>
-      <p>
-        <label for="filtro-competencia">Competencia requerida</label>
-        <select id="filtro-competencia" name="competencia" data-select-competencias>
-          <option value="">Todas</option>
-        </select>
-      </p>
-    </form>
-  </aside>
+    <aside aria-labelledby="titulo-filtros">
+      <h2 id="titulo-filtros">Filtrar iniciativas</h2>
+      <form data-form-filtros>
+        <p>
+          <label for="filtro-texto">Buscar</label>
+          <input type="text" id="filtro-texto" name="texto">
+        </p>
+        <p>
+          <label for="filtro-tipo">Tipo</label>
+          <select id="filtro-tipo" name="tipo">
+            <option value="">Todos</option>
+            <option value="Idea">Idea</option>
+            <option value="Necesidad">Necesidad</option>
+            <option value="Reto">Reto</option>
+          </select>
+        </p>
+        <p>
+          <label for="filtro-categoria">Categoría</label>
+          <select id="filtro-categoria" name="categoria" data-select-categorias>
+            <option value="">Todas</option>
+          </select>
+        </p>
+        <p>
+          <label for="filtro-competencia">Competencia requerida</label>
+          <select id="filtro-competencia" name="competencia" data-select-competencias>
+            <option value="">Todas</option>
+          </select>
+        </p>
+      </form>
+    </aside>
 
-  <section aria-labelledby="titulo-resultados">
-    <h2 id="titulo-resultados" data-titulo-resultados>Cargando iniciativas...</h2>
-    <p role="status" data-aviso-catalogo></p>
-    <div data-lista-iniciativas></div>
-  </section>
+    <section aria-labelledby="titulo-resultados">
+      <h2 id="titulo-resultados" data-titulo-resultados>Cargando iniciativas...</h2>
+      <p role="status" data-aviso-catalogo></p>
+      <div data-lista-iniciativas></div>
+    </section>
+  </main>
 
   <dialog data-modal-eliminar aria-labelledby="titulo-modal-eliminar">
     <h2 id="titulo-modal-eliminar">Eliminar iniciativa</h2>
