@@ -48,6 +48,31 @@ function llenarSelect(select, opciones) {
   });
 }
 
+function aplicarFiltros() {
+  const formulario = document.querySelector("[data-form-filtros]");
+
+  const texto = formulario.elements["texto"].value.trim().toLowerCase();
+  const tipo = formulario.elements["tipo"].value;
+  const categoria = formulario.elements["categoria"].value;
+  const competencia = formulario.elements["competencia"].value;
+
+  const resultado = todasLasIniciativas.filter((iniciativa) => {
+    const coincideTexto =
+      texto === "" ||
+      iniciativa.titulo.toLowerCase().includes(texto) ||
+      iniciativa.resumen.toLowerCase().includes(texto);
+
+    const coincideTipo = tipo === "" || iniciativa.tipo === tipo;
+    const coincideCategoria = categoria === "" || iniciativa.categoria === categoria;
+    const coincideCompetencia =
+      competencia === "" || iniciativa.competencias.includes(competencia);
+
+    return coincideTexto && coincideTipo && coincideCategoria && coincideCompetencia;
+  });
+
+  pintarIniciativas(resultado);
+}
+
 async function iniciarCatalogo() {
   const titulo = document.querySelector("[data-titulo-resultados]");
   const resultado = await cargarDatos("../datos/iniciativas.json");
@@ -64,6 +89,10 @@ async function iniciarCatalogo() {
 
   todasLasIniciativas = resultado.datos;
   pintarIniciativas(todasLasIniciativas);
+
+  const formulario = document.querySelector("[data-form-filtros]");
+  formulario.addEventListener("input", aplicarFiltros);
+  formulario.addEventListener("submit", (evento) => evento.preventDefault());
 
   const categorias = await cargarDatos("../datos/categorias.json");
   if (categorias.estado === "listo") {
