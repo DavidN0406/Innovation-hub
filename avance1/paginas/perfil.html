@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi perfil — Innovation Hub</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+
+  <header>
+    <a href="../index.html">Innovation Hub</a>
+    <nav data-nav aria-label="Principal"></nav>
+  </header>
+
+  <main>
+    <h1>Mi perfil</h1>
+
+    <p id="estadoCarga" role="status">Cargando perfil…</p>
+    <p id="estadoError" role="alert" hidden></p>
+
+    <div id="contenido" hidden>
+      <section aria-labelledby="titulo-personal">
+        <h2 id="titulo-personal">Información personal</h2>
+        <dl>
+          <dt>Nombre</dt>
+          <dd id="nombre"></dd>
+          <dt>Correo</dt>
+          <dd><a id="correo" href="#"></a></dd>
+          <dt>Rol</dt>
+          <dd id="rol"></dd>
+        </dl>
+      </section>
+
+      <section aria-labelledby="titulo-competencias">
+        <h2 id="titulo-competencias">Competencias</h2>
+        <ul id="competencias"></ul>
+      </section>
+
+      <section aria-labelledby="titulo-intereses">
+        <h2 id="titulo-intereses">Intereses</h2>
+        <ul id="intereses"></ul>
+      </section>
+
+      <section aria-labelledby="titulo-proyectos">
+        <h2 id="titulo-proyectos">Proyectos en los que participo</h2>
+        <p id="sinProyectos" hidden>Todavía no participas en ningún proyecto.</p>
+        <ul id="proyectos"></ul>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p>Innovation Hub · Universidad CENFOTEC</p>
+    <p><a href="mailto:hub@ejemplo.ac.cr">hub@ejemplo.ac.cr</a></p>
+  </footer>
+
+  <script src="../js/datos.js"></script>
+  <script src="../js/almacenamiento.js"></script>
+  <script src="../js/nav.js"></script>
+  <script src="../js/perfil.js"></script>
+</body>
+</html>

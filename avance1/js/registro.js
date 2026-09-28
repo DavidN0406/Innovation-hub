@@ -2,7 +2,7 @@
 const RUTA_CATEGORIAS = "../datos/categorias.json";
 const RUTA_COMPETENCIAS = "../datos/competencias.json";
 const RUTA_INICIATIVAS = "../datos/iniciativas.json";
-const AUTOR_ACTUAL = "Jorge Garcia Nuñez";
+const AUTOR_ACTUAL = "Jorge García"; // debe coincidir con el nombre en usuarios.json
 
 // Si la URL trae ?editar=ID, el formulario modifica esa iniciativa en vez de crear una nueva
 const parametroEditar = new URLSearchParams(window.location.search).get("editar");
