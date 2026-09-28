@@ -49,6 +49,15 @@ _(ver la tabla al final de este archivo)_
 | 20 | 2026-09-25 | bd9f1d7 | fix: corregir nombre de validacion.js |
 | 21 | 2026-09-25 | da7cc9f | feat(home): pagina principal con explicacion del sistema |
 | 22 | 2026-09-25 | ae9e2dd | feat(catalogo): tarjetas de iniciativas generadas desde datos |
+| 23 | 2026-09-27 | ecc150a | style: estilos de navbar y compilacion de css |
+| 24 | 2026-09-27 | 92034a6 | feat(catalogo): busqueda y filtros combinados con mensaje sin resultados |
+| 25 | 2026-09-27 | 464c646 | feat(detalle): detalle desde datos y regla RN-03 de visibilidad |
+| 26 | 2026-09-27 | df589e0 | feat(registro): formulario con campos de RF-I-INI-01 |
+| 27 | 2026-09-27 | 5f283b0 | feat(registro): competencias dinamicas y validacion por campo |
+| 28 | 2026-09-27 | 2613636 | feat(iniciativas): modificar y eliminar con modal de confirmacion |
+| 29 | 2026-09-27 | 283333b | feat(perfil): pagina de perfil de usuario |
+| 30 | 2026-09-27 | fbbfba9 | feat(solicitud): formulario de solicitud de participacion |
+| 31 | 2026-09-27 | 93811f8 | fix(a11y): labels, alt y contraste en paginas propias |
 
 <!-- FIN TABLA COMMITS -->
 

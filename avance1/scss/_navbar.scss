@@ -1,35 +1,15 @@
-// Estilos de la barra de navegacion, generada por js/nav.js
+// Personalizacion de la navbar de Bootstrap, generada por js/nav.js
 
 header {
-  background-color: $primary;
-  padding: $spacer;
   margin-bottom: $spacer * 2;
 }
 
-header a:first-child {
-  color: white;
+.navbar-brand {
   font-weight: $headings-font-weight;
-  font-size: 1.25rem;
-  text-decoration: none;
+  letter-spacing: 0.02em;
 }
 
-nav[data-nav] ul {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: $spacer;
-  padding: 0;
-  margin: ($spacer / 2) 0 0 0;
-}
-
-nav[data-nav] a {
-  color: white;
-  text-decoration: none;
-  padding: 0.25rem 0.5rem;
-  border-radius: $border-radius;
-}
-
-nav[data-nav] a:hover,
-nav[data-nav] a[aria-current="page"] {
-  background-color: rgba(255, 255, 255, 0.15);
+.navbar .nav-link[aria-current="page"] {
+  font-weight: 600;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.8);
 }
