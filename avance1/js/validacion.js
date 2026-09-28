@@ -12,7 +12,7 @@ function validarLongitud(valor, min, max, nombre) {
 }
 
 function validarSeleccion(valor, nombre) {
-  return valor === "" ? `Seleccioná una opción en ${nombre}.` : "";
+  return valor === "" ? `Selecciona una opción en ${nombre}.` : "";
 }
 
 function validarEnteroEnRango(valor, min, max, nombre) {

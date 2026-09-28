@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solicitar participación — Innovation Hub</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+
+  <header>
+    <a href="../index.html">Innovation Hub</a>
+    <nav data-nav aria-label="Principal"></nav>
+  </header>
+
+  <main>
+    <h1>Solicitar participación</h1>
+
+    <p id="estadoCarga" role="status">Cargando iniciativa…</p>
+    <p id="estadoError" role="alert" hidden></p>
+
+    <div id="contenido" hidden>
+      <p>Iniciativa: <strong id="tituloIniciativa"></strong></p>
+      <p><a id="enlaceVolver" href="catalogo.html">Volver al detalle</a></p>
+
+      <p id="estadoSolicitud" role="alert" hidden></p>
+
+      <form id="formSolicitud" novalidate>
+
+        <fieldset>
+          <legend>Sobre ti</legend>
+
+          <p>
+            <label for="mensaje">Mensaje de presentación</label>
+            <textarea id="mensaje" name="mensaje" rows="4" aria-describedby="error-mensaje"></textarea>
+            <small id="error-mensaje" role="alert" hidden></small>
+          </p>
+
+          <p>
+            <label for="competencia">Competencia principal que aportas</label>
+            <select id="competencia" name="competencia" aria-describedby="error-competencia">
+              <option value="">Selecciona una opción</option>
+            </select>
+            <small id="error-competencia" role="alert" hidden></small>
+          </p>
+        </fieldset>
+
+        <fieldset>
+          <legend>Participación deseada</legend>
+
+          <p>
+            <label for="rol">Rol deseado</label>
+            <select id="rol" name="rol" aria-describedby="error-rol">
+              <option value="">Selecciona una opción</option>
+              <option value="Desarrollo">Desarrollo</option>
+              <option value="Diseño">Diseño</option>
+              <option value="Coordinación">Coordinación</option>
+              <option value="Otro">Otro</option>
+            </select>
+            <small id="error-rol" role="alert" hidden></small>
+          </p>
+
+          <p>
+            <label for="disponibilidad">Disponibilidad</label>
+            <select id="disponibilidad" name="disponibilidad" aria-describedby="error-disponibilidad">
+              <option value="">Selecciona una opción</option>
+              <option value="Pocas horas por semana">Pocas horas por semana</option>
+              <option value="Medio tiempo">Medio tiempo</option>
+              <option value="Tiempo completo">Tiempo completo</option>
+            </select>
+            <small id="error-disponibilidad" role="alert" hidden></small>
+          </p>
+        </fieldset>
+
+        <p><button type="submit">Enviar solicitud</button></p>
+      </form>
+
+      <section id="confirmacion" aria-labelledby="titulo-confirmacion" hidden>
+        <h2 id="titulo-confirmacion">Solicitud enviada</h2>
+        <p id="textoConfirmacion" role="status"></p>
+        <p>
+          <a id="enlaceDetalle" href="catalogo.html">Ver la iniciativa</a> ·
+          <a href="catalogo.html">Volver al catálogo</a>
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p>Innovation Hub · Universidad CENFOTEC</p>
+    <p><a href="mailto:hub@ejemplo.ac.cr">hub@ejemplo.ac.cr</a></p>
+  </footer>
+
+  <script src="../js/datos.js"></script>
+  <script src="../js/almacenamiento.js"></script>
+  <script src="../js/nav.js"></script>
+  <script src="../js/validacion.js"></script>
+  <script src="../js/solicitud.js"></script>
+</body>
+</html>
