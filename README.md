@@ -108,6 +108,7 @@ Nota sobre el historial: los 11 commits del 7 de setiembre corresponden al talle
 | 31 | 2026-09-27 | 93811f8 | fix(a11y): labels, alt y contraste en paginas propias |
 | 32 | 2026-09-27 | 3407f7c | feat(nav): navbar de Bootstrap con menu colapsable generada desde nav.js |
 | 33 | 2026-09-27 | ac79275 | feat(ui): Bootstrap en todas las pantallas, estilos Sass y CSS final |
+| 34 | 2026-09-27 | cbe3849 | Entrega Final del Avance 1 |
 
 <!-- FIN TABLA COMMITS -->
 
@@ -117,9 +118,9 @@ Este repositorio incluye un script que actualiza automáticamente la tabla de co
 
 \`\`\`bash
 chmod +x herramientas/tabla-commits.sh
-cp herramientas/tabla-commits.sh .git/hooks/pre-commit
-echo "git add README.md" >> .git/hooks/pre-commit
-chmod +x .git/hooks/pre-commit
+cp herramientas/tabla-commits.sh pre-commit.desactivado
+echo "git add README.md" >> pre-commit.desactivado
+chmod +x pre-commit.desactivado
 \`\`\`
 
 > **Nota:** Debido a cómo funcionan los hooks de Git, cada commit aparece 

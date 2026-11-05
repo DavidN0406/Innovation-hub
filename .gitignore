@@ -15,3 +15,12 @@ Thumbs.db
 # secretos: los vas a necesitar desde el Avance 2
 .env
 .env.local
+
+# Variables de entorno adicionales
+.env.*
+
+# Plantilla de configuracion sin secretos
+!.env.example
+
+# Archivos generados al compilar
+dist/

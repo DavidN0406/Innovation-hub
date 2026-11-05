@@ -1,0 +1,7 @@
+ .gitignore        | 9 [32m+++++++++[m
+ README.md         | 6 [32m+++[m[31m---[m
+ cliente/.gitkeep  | 0
+ docs/.gitkeep     | 0
+ pruebas/.gitkeep  | 0
+ servidor/.gitkeep | 0
+ 6 files changed, 12 insertions(+), 3 deletions(-)
