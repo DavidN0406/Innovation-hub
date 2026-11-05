@@ -109,6 +109,7 @@ Nota sobre el historial: los 11 commits del 7 de setiembre corresponden al talle
 | 32 | 2026-09-27 | 3407f7c | feat(nav): navbar de Bootstrap con menu colapsable generada desde nav.js |
 | 33 | 2026-09-27 | ac79275 | feat(ui): Bootstrap en todas las pantallas, estilos Sass y CSS final |
 | 34 | 2026-09-27 | cbe3849 | Entrega Final del Avance 1 |
+| 35 | 2026-11-05 | dbaa04e | Preparar estructura del avance 2 |
 
 <!-- FIN TABLA COMMITS -->
 
