@@ -1,3 +1,4 @@
+import { Link } from "react-router"
 import TarjetaInformativa from "../componentes/comunes/TarjetaInformativa.jsx"
 
 const tiposIniciativa = [
@@ -42,19 +43,19 @@ function Inicio() {
                 </p>
 
                 <div className="d-flex flex-wrap gap-2">
-                    <a
+                    <Link
                         className="btn btn-primary btn-lg"
-                        href="/catalogo"
+                        to="/catalogo"
                     >
                         Ver catálogo
-                    </a>
+                    </Link>
 
-                    <a
+                    <Link
                         className="btn btn-outline-primary btn-lg"
-                        href="/iniciativas/nueva"
+                        to="/iniciativas/nueva"
                     >
                         Publicar una iniciativa
-                    </a>
+                    </Link>
                 </div>
             </section>
 
@@ -100,12 +101,12 @@ function Inicio() {
                                 en el catálogo.
                             </p>
 
-                            <a
+                            <Link
                                 className="btn btn-primary"
-                                href="/iniciativas/nueva"
+                                to="/iniciativas/nueva"
                             >
                                 Registrar una iniciativa
-                            </a>
+                            </Link>
                         </TarjetaInformativa>
                     </div>
 
@@ -118,12 +119,12 @@ function Inicio() {
                                 para unirte al equipo.
                             </p>
 
-                            <a
+                            <Link
                                 className="btn btn-primary"
-                                href="/catalogo"
+                                to="/catalogo"
                             >
                                 Explorar el catálogo
-                            </a>
+                            </Link>
                         </TarjetaInformativa>
                     </div>
                 </div>

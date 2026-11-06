@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link, NavLink } from "react-router"
 
 const enlaces = [
     { texto: "Catálogo", ruta: "/catalogo" },
@@ -6,7 +7,6 @@ const enlaces = [
     { texto: "Mi perfil", ruta: "/perfil" }
 ]
 
-// Barra de navegación con un menú desplegable en pantallas pequeñas.
 function Navbar() {
     const [menuAbierto, setMenuAbierto] = useState(false)
 
@@ -16,6 +16,10 @@ function Navbar() {
         })
     }
 
+    function cerrarMenu() {
+        setMenuAbierto(false)
+    }
+
     return (
         <header>
             <nav
@@ -23,9 +27,13 @@ function Navbar() {
                 aria-label="Principal"
             >
                 <div className="container">
-                    <a className="navbar-brand" href="/">
+                    <Link
+                        className="navbar-brand"
+                        to="/"
+                        onClick={cerrarMenu}
+                    >
                         Innovation Hub
-                    </a>
+                    </Link>
 
                     <button
                         className="navbar-toggler"
@@ -52,12 +60,14 @@ function Navbar() {
                                         className="nav-item"
                                         key={enlace.ruta}
                                     >
-                                        <a
+                                        <NavLink
                                             className="nav-link"
-                                            href={enlace.ruta}
+                                            to={enlace.ruta}
+                                            onClick={cerrarMenu}
+                                            end
                                         >
                                             {enlace.texto}
-                                        </a>
+                                        </NavLink>
                                     </li>
                                 )
                             })}
