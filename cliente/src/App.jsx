@@ -1,14 +1,12 @@
-// Componente principal de Innovation Hub.
+import Pagina from "./componentes/layout/Pagina.jsx"
+import Inicio from "./paginas/Inicio.jsx"
+
+// Coloca la página de inicio dentro de la estructura compartida.
 function App() {
     return (
-        <main>
-            <h1>Innovation Hub</h1>
-
-            <p>
-                Un espacio para compartir iniciativas,
-                encontrar colaboradores y formar equipos.
-            </p>
-        </main>
+        <Pagina>
+            <Inicio />
+        </Pagina>
     )
 }
 

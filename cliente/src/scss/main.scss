@@ -1,0 +1,16 @@
+// 1. Funciones de Bootstrap (necesarias antes de las variables propias)
+@import "bootstrap/scss/functions";
+
+// 2. Variables propias
+@import "variables";
+
+// 3. Bootstrap completo
+@import "bootstrap/scss/bootstrap";
+
+// 4. Parciales del proyecto
+@import "navbar";
+@import "home";
+@import "tarjetas";
+@import "detalle";
+@import "formularios";
+@import "perfil";
