@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router'
 import { consultarProyecto } from '../servicios/proyectos.js'
 import useConsulta from '../hooks/useConsulta.js'
 import EstadoConsulta from '../componentes/participacion/EstadoConsulta.jsx'
+import RepositorioGitHub from '../componentes/proyectos/RepositorioGitHub.jsx'
 
 function Detalle({ id, usuario }) {
   const cargar = useCallback(signal => consultarProyecto(id, { usuario, signal }), [id, usuario])
@@ -18,7 +19,7 @@ function Detalle({ id, usuario }) {
         <dt>Iniciativa de origen</dt><dd>{p.iniciativa.titulo} (ID: {p.iniciativaId}) · <Link to={`/iniciativas/${encodeURIComponent(p.iniciativaId)}/equipo`}>Consultar equipo</Link></dd>
       </dl>
       {!p.repositorio && <p>Este proyecto no tiene un repositorio asociado.</p>}
-      {p.repositorio && <p>Repositorio asociado: {p.repositorio}</p>}
+      {p.repositorio && <RepositorioGitHub key={p.repositorio} repositorio={p.repositorio} />}
     </article>}</EstadoConsulta>
     <Link to="/proyectos">Volver a proyectos</Link>
   </section>
