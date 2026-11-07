@@ -21,6 +21,8 @@ Thumbs.db
 
 # Plantilla de configuracion sin secretos
 !.env.example
+!.env.gustavo.example
 
 # Archivos generados al compilar
 dist/
+dist-gustavo/

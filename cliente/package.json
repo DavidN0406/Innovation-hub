@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:gustavo": "vite --config vite.gustavo.config.js --open /gustavo.html",
+    "build:gustavo": "vite build --config vite.gustavo.config.js",
+    "test": "node --test pruebas/*.test.js"
   },
   "dependencies": {
     "bootstrap": "^5.3.8",
