@@ -4,6 +4,7 @@ import NuevaSolicitud from '../paginas/NuevaSolicitud.jsx'
 import SolicitudesRecibidas from '../paginas/SolicitudesRecibidas.jsx'
 import EquipoIniciativa from '../paginas/EquipoIniciativa.jsx'
 import InicioParticipacion from '../paginas/InicioParticipacion.jsx'
+import ConvertirProyecto from '../paginas/ConvertirProyecto.jsx'
 import NoEncontrada from '../paginas/NoEncontrada.jsx'
 
 export default function RutasGustavo({ usuario }) {
@@ -15,6 +16,7 @@ export default function RutasGustavo({ usuario }) {
     <Route path="/solicitudes/nueva" element={<NuevaSolicitud usuario={usuario} />} />
     <Route path="/iniciativas/:id/solicitar" element={<NuevaSolicitud usuario={usuario} />} />
     <Route path="/iniciativas/:id/equipo" element={<EquipoIniciativa usuario={usuario} />} />
+    <Route path="/iniciativas/:id/convertir" element={<ConvertirProyecto usuario={usuario} />} />
     <Route path="*" element={<NoEncontrada />} />
   </Routes>
 }
