@@ -3,6 +3,12 @@ import { simularRespuesta } from "./simulacion.js"
 
 const iniciativas = structuredClone(iniciativasIniciales)
 
+function errorNoDisponible() {
+    const error = new Error("La iniciativa no existe o no está disponible.")
+    error.estado = 404
+    return error
+}
+
 function normalizar(texto) {
     return texto.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 }
@@ -56,4 +62,52 @@ export async function buscarIniciativas({
         pagina: paginaActual,
         totalPaginas
     })
+}
+
+// Simula los niveles del avance 1. La API real determinará los permisos
+// de los cuatro niveles; recibir un usuarioId aquí no autentica a nadie.
+export async function consultarIniciativa(id, usuarioId = null) {
+    if (!import.meta.env.DEV) {
+        throw new Error("El detalle todavía no está conectado con la API real.")
+    }
+
+    await simularRespuesta(null)
+    const iniciativa = iniciativas.find((actual) => String(actual.id) === String(id))
+    if (!iniciativa) throw errorNoDisponible()
+
+    const esPropietario = usuarioId != null && iniciativa.propietarioId != null &&
+        String(iniciativa.propietarioId) === String(usuarioId)
+    const esMiembro = usuarioId != null && iniciativa.equipo.some((miembro) =>
+        miembro.usuarioId != null && String(miembro.usuarioId) === String(usuarioId))
+    const archivada = iniciativa.estado === "Archivada"
+    const accesoCompleto = iniciativa.visibilidad === "publica" || esPropietario
+
+    if ((archivada && !esPropietario) ||
+        (!accesoCompleto && iniciativa.visibilidad !== "restringida")) {
+        throw errorNoDisponible()
+    }
+
+    const tieneOtroMiembro = iniciativa.equipo.some((miembro) =>
+        miembro.usuarioId != null && String(miembro.usuarioId) !== String(iniciativa.propietarioId))
+
+    const permisos = {
+        puedeEditar: esPropietario && !archivada,
+        puedeSolicitar: usuarioId != null && !esPropietario && !esMiembro && !archivada,
+        puedeVerEquipo: accesoCompleto,
+        puedeConvertir: esPropietario && tieneOtroMiembro && !archivada,
+        faltaMiembroParaConvertir: esPropietario && !tieneOtroMiembro && !archivada
+    }
+
+    // La pantalla recibe solo el resumen cuando no tiene acceso completo.
+    const datos = accesoCompleto ? iniciativa : {
+        id: iniciativa.id,
+        titulo: iniciativa.titulo,
+        tipo: iniciativa.tipo,
+        categoria: iniciativa.categoria,
+        estado: iniciativa.estado,
+        visibilidad: iniciativa.visibilidad,
+        resumen: iniciativa.resumen
+    }
+
+    return structuredClone({ ...datos, accesoCompleto, permisos })
 }

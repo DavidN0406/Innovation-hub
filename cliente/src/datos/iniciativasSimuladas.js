@@ -23,6 +23,7 @@ export const competenciasCatalogo = [
     "Fotografía"
 ]
 
+// Identificadores ficticios estables para propietario y miembros.
 export const iniciativasIniciales = [
     {
         "id": 1,
@@ -49,13 +50,16 @@ export const iniciativasIniciales = [
         "equipo": [
             {
                 "nombre": "Ana Rojas",
-                "rol": "Líder de proyecto"
+                "rol": "Líder de proyecto",
+                "usuarioId": "autor-1"
             },
             {
                 "nombre": "Diego Salas",
-                "rol": "Desarrollo frontend"
+                "rol": "Desarrollo frontend",
+                "usuarioId": "miembro-1-2"
             }
-        ]
+        ],
+        "propietarioId": "autor-1"
     },
     {
         "id": 2,
@@ -82,9 +86,11 @@ export const iniciativasIniciales = [
         "equipo": [
             {
                 "nombre": "Marco Ureña",
-                "rol": "Líder de proyecto"
+                "rol": "Líder de proyecto",
+                "usuarioId": "autor-2"
             }
-        ]
+        ],
+        "propietarioId": "autor-2"
     },
     {
         "id": 3,
@@ -111,13 +117,16 @@ export const iniciativasIniciales = [
         "equipo": [
             {
                 "nombre": "Camila Vindas",
-                "rol": "Líder de proyecto"
+                "rol": "Líder de proyecto",
+                "usuarioId": "autor-3"
             },
             {
                 "nombre": "Josué Alfaro",
-                "rol": "Investigación"
+                "rol": "Investigación",
+                "usuarioId": "miembro-3-2"
             }
-        ]
+        ],
+        "propietarioId": "autor-3"
     },
     {
         "id": 4,
@@ -144,9 +153,11 @@ export const iniciativasIniciales = [
         "equipo": [
             {
                 "nombre": "Luis Chacón",
-                "rol": "Líder de proyecto"
+                "rol": "Líder de proyecto",
+                "usuarioId": "autor-4"
             }
-        ]
+        ],
+        "propietarioId": "autor-4"
     },
     {
         "id": 5,
@@ -173,9 +184,11 @@ export const iniciativasIniciales = [
         "equipo": [
             {
                 "nombre": "Fernanda Solís",
-                "rol": "Líder de proyecto"
+                "rol": "Líder de proyecto",
+                "usuarioId": "autor-5"
             }
-        ]
+        ],
+        "propietarioId": "autor-5"
     },
     {
         "id": 6,
@@ -202,13 +215,16 @@ export const iniciativasIniciales = [
         "equipo": [
             {
                 "nombre": "Kevin Mora",
-                "rol": "Líder de proyecto"
+                "rol": "Líder de proyecto",
+                "usuarioId": "autor-6"
             },
             {
                 "nombre": "Paula Rojas",
-                "rol": "Análisis de datos"
+                "rol": "Análisis de datos",
+                "usuarioId": "miembro-6-2"
             }
-        ]
+        ],
+        "propietarioId": "autor-6"
     },
     {
         "id": 7,
@@ -235,9 +251,11 @@ export const iniciativasIniciales = [
         "equipo": [
             {
                 "nombre": "Gabriel Herrera",
-                "rol": "Líder de proyecto"
+                "rol": "Líder de proyecto",
+                "usuarioId": "autor-7"
             }
-        ]
+        ],
+        "propietarioId": "autor-7"
     },
     {
         "id": 8,
@@ -264,8 +282,10 @@ export const iniciativasIniciales = [
         "equipo": [
             {
                 "nombre": "Valeria Núñez",
-                "rol": "Líder de proyecto"
+                "rol": "Líder de proyecto",
+                "usuarioId": "autor-8"
             }
-        ]
+        ],
+        "propietarioId": "autor-8"
     }
 ]

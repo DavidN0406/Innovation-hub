@@ -4,6 +4,7 @@ import Acceso from "./paginas/Acceso.jsx"
 import Perfil from "./paginas/Perfil.jsx"
 import Usuarios from "./paginas/Usuarios.jsx"
 import Catalogo from "./paginas/Catalogo.jsx"
+import DetalleIniciativa from "./paginas/DetalleIniciativa.jsx"
 
 import Pagina from "./componentes/layout/Pagina.jsx"
 import Inicio from "./paginas/Inicio.jsx"
@@ -13,7 +14,6 @@ import NoEncontrada from "./paginas/NoEncontrada.jsx"
 // Rutas preparadas para las funcionalidades del avance.
 const rutasPendientes = [
     { ruta: "/iniciativas/nueva", titulo: "Registrar iniciativa" },
-    { ruta: "/iniciativas/:id", titulo: "Detalle de iniciativa" },
     { ruta: "/iniciativas/:id/editar", titulo: "Editar iniciativa" },
     { ruta: "/iniciativas/:id/solicitar", titulo: "Solicitar participación" },
     { ruta: "/iniciativas/:id/equipo", titulo: "Equipo de la iniciativa" },
@@ -44,6 +44,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Inicio />} />
                 <Route path="/catalogo" element={<Catalogo />} />
+                <Route path="/iniciativas/:id" element={<DetalleIniciativa usuario={usuario} />} />
                 <Route path="/registro" element={usuario
                     ? <Navigate to="/" replace />
                     : <Acceso key="registro" registro onAutenticar={setUsuario} />}
@@ -81,3 +82,4 @@ function App() {
 }
 
 export default App
+
