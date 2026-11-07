@@ -1,0 +1,1611 @@
+{
+  "info": {
+    "name": "Innovation Hub - Participación (propuesta G8)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Contrato propuesto en docs/api-participacion-propuesta.md. Preparar datos y sesiones según pruebas/README.md. Ejecutar sobre base de pruebas: modifica solicitudes/equipos/proyectos. No se ha ejecutado contra un servidor real."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "idInexistente",
+      "value": "000000000000000000000000"
+    },
+    {
+      "key": "cookiePropietario",
+      "value": ""
+    },
+    {
+      "key": "cookieSolicitante",
+      "value": ""
+    },
+    {
+      "key": "cookieAjeno",
+      "value": ""
+    },
+    {
+      "key": "iniciativaPublicaId",
+      "value": ""
+    },
+    {
+      "key": "iniciativaPropiaId",
+      "value": ""
+    },
+    {
+      "key": "iniciativaConvertirId",
+      "value": ""
+    },
+    {
+      "key": "iniciativaSinMiembrosId",
+      "value": ""
+    },
+    {
+      "key": "propietarioId",
+      "value": ""
+    },
+    {
+      "key": "miembroRetirableId",
+      "value": ""
+    },
+    {
+      "key": "solicitudAjenaId",
+      "value": ""
+    },
+    {
+      "key": "solicitudAceptarId",
+      "value": ""
+    },
+    {
+      "key": "solicitudRechazarId",
+      "value": ""
+    },
+    {
+      "key": "solicitudPendienteId",
+      "value": ""
+    },
+    {
+      "key": "solicitanteAceptarId",
+      "value": ""
+    },
+    {
+      "key": "solicitudCreadaId",
+      "value": ""
+    },
+    {
+      "key": "proyectoCreadoId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Iniciativas: selección para participar",
+      "item": [
+        {
+          "name": "Correcta: iniciativas propias paginadas",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives?scope=owned&page=1&size=5"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inválida: tamaño cero",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives?scope=owned&size=0"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inexistente: equipo de iniciativa desconocida",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{idInexistente}}/team"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "No autorizado: sin sesión",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives?scope=owned"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Solicitudes: consulta y validación",
+      "item": [
+        {
+          "name": "Correcta: consultar propias",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookieSolicitante}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests?scope=mine&page=1&size=5"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Correcta: filtrar recibidas",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests?scope=received&status=pendiente&initiativeId={{iniciativaPropiaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inválida: estado desconocido",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests?status=inventado"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inválida: formulario vacío",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookieSolicitante}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaPublicaId}}/requests",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });",
+                  "pm.test('Errores por campo', () => pm.expect(pm.response.json().error.fields).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inexistente: editar solicitud desconocida",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookieSolicitante}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{idInexistente}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mensaje\": \"Participar en pruebas de integración\",\n  \"competencias\": [\n    \"React\"\n  ],\n  \"disponibilidad\": \"Lunes por la tarde\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "No autorizado: consultar sin sesión",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests?scope=mine"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Prohibida: editar solicitud ajena",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookieAjeno}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{solicitudAjenaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mensaje\": \"Participar en pruebas de integración\",\n  \"competencias\": [\n    \"React\"\n  ],\n  \"disponibilidad\": \"Lunes por la tarde\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Solicitudes: crear, editar y cancelar",
+      "item": [
+        {
+          "name": "Crear solicitud propia",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookieSolicitante}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaPublicaId}}/requests",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mensaje\": \"Participar en pruebas de integración\",\n  \"competencias\": [\n    \"React\"\n  ],\n  \"disponibilidad\": \"Lunes por la tarde\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "if (pm.response.code === 201) pm.collectionVariables.set('solicitudCreadaId', pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Conflicto: pendiente duplicada",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookieSolicitante}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaPublicaId}}/requests",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mensaje\": \"Participar en pruebas de integración\",\n  \"competencias\": [\n    \"React\"\n  ],\n  \"disponibilidad\": \"Lunes por la tarde\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Editar pendiente",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookieSolicitante}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{solicitudCreadaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mensaje\": \"Motivación actualizada\",\n  \"competencias\": [\n    \"React\"\n  ],\n  \"disponibilidad\": \"Lunes por la tarde\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cancelar pendiente",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookieSolicitante}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{solicitudCreadaId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"cancelada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Conflicto: editar cancelada",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookieSolicitante}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{solicitudCreadaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mensaje\": \"Participar en pruebas de integración\",\n  \"competencias\": [\n    \"React\"\n  ],\n  \"disponibilidad\": \"Lunes por la tarde\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Solicitudes: resolución y alta al equipo",
+      "item": [
+        {
+          "name": "Aceptar pendiente",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{solicitudAceptarId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"aceptada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Comprobar incorporación al equipo",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaPropiaId}}/team"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Solicitante incorporado', () => pm.expect(pm.response.json().miembros.some(m => String(m.usuarioId) === pm.collectionVariables.get('solicitanteAceptarId'))).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Conflicto: aceptar dos veces",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{solicitudAceptarId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"aceptada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar otra pendiente",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{solicitudRechazarId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"rechazada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inválida: transición inventada",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{solicitudPendienteId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"inventada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Prohibida: resolver como ajeno",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookieAjeno}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/requests/{{solicitudPendienteId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"aceptada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Equipos",
+      "item": [
+        {
+          "name": "Correcta: listar equipo",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaPropiaId}}/team"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inválida: retirar al propietario",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaPropiaId}}/team/{{propietarioId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inexistente: retirar miembro desconocido",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaPropiaId}}/team/{{idInexistente}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "No autorizado: retirar sin sesión",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaPropiaId}}/team/{{miembroRetirableId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Prohibida: retirar como ajeno",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookieAjeno}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaPropiaId}}/team/{{miembroRetirableId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Correcta: retirar integrante",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaPropiaId}}/team/{{miembroRetirableId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 204', () => pm.response.to.have.status(204));",
+                  "pm.test('Sin contenido', () => pm.expect(pm.response.text()).to.eql(''));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Proyectos",
+      "item": [
+        {
+          "name": "Correcta: listar accesibles",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/projects?page=1&size=5"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inválida: paginación",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/projects?page=0"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inválida: formulario",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaConvertirId}}/projects",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"\",\n  \"descripcion\": \"Proyecto creado desde la colección\",\n  \"objetivo\": \"Validar conversión\",\n  \"fechaInicio\": \"2026-02-30\",\n  \"estado\": \"planificado\",\n  \"repositorio\": \"https://github.com/DavidN0406/Innovation-hub\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });",
+                  "pm.test('Errores por campo', () => pm.expect(pm.response.json().error.fields).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inexistente: detalle",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/projects/{{idInexistente}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "No autorizado: sin sesión",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/projects"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Prohibida: conversión como ajeno",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookieAjeno}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaConvertirId}}/projects",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Proyecto de integración\",\n  \"descripcion\": \"Proyecto creado desde la colección\",\n  \"objetivo\": \"Validar conversión\",\n  \"fechaInicio\": \"2026-11-07\",\n  \"estado\": \"planificado\",\n  \"repositorio\": \"https://github.com/DavidN0406/Innovation-hub\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "RN-09: sin otro miembro",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaSinMiembrosId}}/projects",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Proyecto de integración\",\n  \"descripcion\": \"Proyecto creado desde la colección\",\n  \"objetivo\": \"Validar conversión\",\n  \"fechaInicio\": \"2026-11-07\",\n  \"estado\": \"planificado\",\n  \"repositorio\": \"https://github.com/DavidN0406/Innovation-hub\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Correcta: convertir",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaConvertirId}}/projects",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Proyecto de integración\",\n  \"descripcion\": \"Proyecto creado desde la colección\",\n  \"objetivo\": \"Validar conversión\",\n  \"fechaInicio\": \"2026-11-07\",\n  \"estado\": \"planificado\",\n  \"repositorio\": \"https://github.com/DavidN0406/Innovation-hub\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "if (pm.response.code === 201) pm.collectionVariables.set('proyectoCreadoId', pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Correcta: consultar y conservar origen",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/projects/{{proyectoCreadoId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Mantiene origen', () => pm.expect(String(pm.response.json().iniciativaId)).to.eql(pm.collectionVariables.get('iniciativaConvertirId')));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Conflicto: conversión duplicada",
+          "protocolProfileBehavior": {
+            "disableCookies": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "{{cookiePropietario}}",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/initiatives/{{iniciativaConvertirId}}/projects",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Proyecto de integración\",\n  \"descripcion\": \"Proyecto creado desde la colección\",\n  \"objetivo\": \"Validar conversión\",\n  \"fechaInicio\": \"2026-11-07\",\n  \"estado\": \"planificado\",\n  \"repositorio\": \"https://github.com/DavidN0406/Innovation-hub\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Código HTTP 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Respuesta JSON', () => pm.response.to.be.json);",
+                  "pm.test('Error uniforme', () => { const e = pm.response.json().error; pm.expect(e.message).to.be.a('string'); pm.expect(e.code).to.be.a('string'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
