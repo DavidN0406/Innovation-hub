@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Link, Route, Routes } from 'react-router'
+import { Link } from 'react-router'
 import { modoSimulado } from '../servicios/participacion/transporte.js'
-import NoEncontrada from '../paginas/NoEncontrada.jsx'
+import RutasGustavo from './RutasGustavo.jsx'
 export default function Desarrollo({ personas }) {
   const [usuarioId, setUsuarioId] = useState(personas[0]?.id ?? '')
   const usuario = personas.find(p => p.id === usuarioId) ?? null
@@ -19,10 +19,7 @@ export default function Desarrollo({ personas }) {
         <Link to="/solicitudes-recibidas">Solicitudes recibidas</Link><Link to="/proyectos">Proyectos</Link>
       </nav>
     </header>
-    <main key={usuario?.id ?? 'visitante'}><Routes>
-      <Route path="/" element={<p>Seleccione una pantalla del menú para comenzar.</p>} />
-      <Route path="*" element={<NoEncontrada />} />
-    </Routes></main>
+    <main key={usuario?.id ?? 'visitante'}><RutasGustavo usuario={usuario} /></main>
   </div>
 }
 
