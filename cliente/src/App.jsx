@@ -1,4 +1,6 @@
-import { Route, Routes } from "react-router"
+import { useState } from "react"
+import { Navigate, Route, Routes, useNavigate } from "react-router"
+import Acceso from "./paginas/Acceso.jsx"
 
 import Pagina from "./componentes/layout/Pagina.jsx"
 import Inicio from "./paginas/Inicio.jsx"
@@ -19,17 +21,31 @@ const rutasPendientes = [
     { ruta: "/mis-solicitudes", titulo: "Mis solicitudes" },
     { ruta: "/solicitudes-recibidas", titulo: "Solicitudes recibidas" },
     { ruta: "/proyectos", titulo: "Proyectos" },
-    { ruta: "/proyectos/:id", titulo: "Detalle de proyecto" },
-    { ruta: "/registro", titulo: "Crear cuenta" },
-    { ruta: "/login", titulo: "Iniciar sesión" }
+    { ruta: "/proyectos/:id", titulo: "Detalle de proyecto" }
 ]
 
 // Mantiene la estructura compartida y cambia el contenido según la ruta.
 function App() {
+    const [usuario, setUsuario] = useState(null)
+    const navegar = useNavigate()
+
+    function cerrarSesion() {
+        setUsuario(null)
+        navegar("/login", { replace: true })
+    }
+
     return (
-        <Pagina>
+        <Pagina usuario={usuario} onCerrarSesion={cerrarSesion}>
             <Routes>
                 <Route path="/" element={<Inicio />} />
+                <Route path="/registro" element={usuario
+                    ? <Navigate to="/" replace />
+                    : <Acceso key="registro" registro onAutenticar={setUsuario} />}
+                />
+                <Route path="/login" element={usuario
+                    ? <Navigate to="/" replace />
+                    : <Acceso key="login" onAutenticar={setUsuario} />}
+                />
 
                 {rutasPendientes.map(function (ruta) {
                     return (

@@ -7,7 +7,7 @@ const enlaces = [
     { texto: "Mi perfil", ruta: "/perfil" }
 ]
 
-function Navbar() {
+function Navbar({ usuario, onCerrarSesion }) {
     const [menuAbierto, setMenuAbierto] = useState(false)
 
     function alternarMenu() {
@@ -71,6 +71,31 @@ function Navbar() {
                                     </li>
                                 )
                             })}
+                            {usuario ? (
+                                <li className="nav-item d-flex align-items-center gap-2">
+                                    <span className="navbar-text">{usuario.nombre}</span>
+                                    <button type="button" className="btn btn-outline-light btn-sm"
+                                        onClick={() => {
+                                            cerrarMenu()
+                                            onCerrarSesion()
+                                        }}>
+                                        Cerrar sesión
+                                    </button>
+                                </li>
+                            ) : (
+                                <>
+                                    <li className="nav-item">
+                                        <NavLink className="nav-link" to="/login" onClick={cerrarMenu}>
+                                            Iniciar sesión
+                                        </NavLink>
+                                    </li>
+                                    <li className="nav-item">
+                                        <NavLink className="nav-link" to="/registro" onClick={cerrarMenu}>
+                                            Crear cuenta
+                                        </NavLink>
+                                    </li>
+                                </>
+                            )}
                         </ul>
                     </div>
                 </div>

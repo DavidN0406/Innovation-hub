@@ -1,10 +1,10 @@
 import Navbar from "./Navbar.jsx"
 
 // Estructura compartida por las páginas de la aplicación.
-function Pagina({ children }) {
+function Pagina({ children, usuario, onCerrarSesion }) {
     return (
         <>
-            <Navbar />
+            <Navbar usuario={usuario} onCerrarSesion={onCerrarSesion} />
 
             <main className="container">
                 {children}
