@@ -6,8 +6,7 @@ import EstadoConsulta from '../componentes/participacion/EstadoConsulta.jsx'
 import Paginacion from '../componentes/participacion/Paginacion.jsx'
 import FormularioSolicitud from '../componentes/participacion/FormularioSolicitud.jsx'
 
-export default function NuevaSolicitud({ usuario }) {
-  const { id } = useParams()
+function FormularioNuevaSolicitud({ usuario, id }) {
   const navegar = useNavigate()
   const [seleccion, setSeleccion] = useState(id ?? '')
   const [pagina, setPagina] = useState(1)
@@ -29,4 +28,9 @@ export default function NuevaSolicitud({ usuario }) {
       onGuardado={() => navegar('/mis-solicitudes')} /></div>}
     <Link to="/mis-solicitudes">Volver a mis solicitudes</Link>
   </section>
+}
+
+export default function NuevaSolicitud({ usuario }) {
+  const { id } = useParams()
+  return <FormularioNuevaSolicitud key={`${id ?? 'seleccion'}-${usuario.id}`} usuario={usuario} id={id} />
 }
