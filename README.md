@@ -112,6 +112,7 @@ Nota sobre el historial: los 11 commits del 7 de setiembre corresponden al talle
 | 35 | 2026-11-05 | dbaa04e | Preparar estructura del avance 2 |
 | 36 | 2026-11-05 | fabd6d5 | Crear cliente React con Vite |
 | 37 | 2026-11-05 | 619be49 | Migrar estilos y estructura visual del avance 1 |
+| 38 | 2026-11-05 | 9aba611 | Configurar navegacion y rutas con React Router |
 
 <!-- FIN TABLA COMMITS -->
 
