@@ -115,6 +115,7 @@ Nota sobre el historial: los 11 commits del 7 de setiembre corresponden al talle
 | 38 | 2026-11-05 | 9aba611 | Configurar navegacion y rutas con React Router |
 | 39 | 2026-11-06 | 39d22c4 | Configurar servicios y simulacion del cliente |
 | 40 | 2026-11-06 | 46ebee2 | Implementar registro e inicio y cierre de sesion |
+| 41 | 2026-11-06 | 86fced6 | Implementar perfiles y busqueda de usuarios |
 
 <!-- FIN TABLA COMMITS -->
 
