@@ -63,7 +63,7 @@ export function crearSimulador() {
         verificar(['owned', 'accessible'].includes(consulta.get('scope') ?? 'accessible'), 400, 'Ámbito inválido.')
         const items = iniciativas.filter(dato => consulta.get('scope') === 'owned'
           ? igual(dato.propietarioId, usuario.id) : acceso(dato, usuario))
-        return paginar(items.map(vistaIniciativa), consulta)
+        return paginar(items.map(vistaIniciativa).sort((a, b) => a.id.localeCompare(b.id)), consulta)
       }
       const dato = iniciativa(id)
       if (subrecurso === 'requests' && method === 'POST') {
@@ -132,7 +132,7 @@ export function crearSimulador() {
     }
     if (recurso === 'projects' && method === 'GET') {
       const visibles = proyectos.filter(p => acceso(iniciativa(p.iniciativaId), usuario))
-      if (!id) return paginar(visibles, consulta)
+      if (!id) return paginar([...visibles].sort((a, b) => a.id.localeCompare(b.id)), consulta)
       const proyecto = visibles.find(p => p.id === id)
       verificar(proyecto, 404, 'El proyecto no existe o no está disponible.')
       return proyecto
