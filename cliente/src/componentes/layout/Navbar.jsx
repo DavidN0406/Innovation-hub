@@ -4,7 +4,8 @@ import { Link, NavLink } from "react-router"
 const enlaces = [
     { texto: "Catálogo", ruta: "/catalogo" },
     { texto: "Registrar iniciativa", ruta: "/iniciativas/nueva" },
-    { texto: "Mi perfil", ruta: "/perfil" }
+    { texto: "Mi perfil", ruta: "/perfil" },
+    { texto: "Buscar usuarios", ruta: "/usuarios" }
 ]
 
 function Navbar({ usuario, onCerrarSesion }) {
@@ -23,7 +24,7 @@ function Navbar({ usuario, onCerrarSesion }) {
     return (
         <header>
             <nav
-                className="navbar navbar-expand-md navbar-dark bg-primary"
+                className="navbar navbar-expand-xl navbar-dark bg-primary"
                 aria-label="Principal"
             >
                 <div className="container">

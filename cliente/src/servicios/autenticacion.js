@@ -1,4 +1,5 @@
 import { simularRespuesta } from "./simulacion.js"
+import { consultarPerfil, crearPerfilSimulado } from "./usuarios.js"
 
 // Cuentas ficticias: se pierden al recargar la página.
 let cuentas = []
@@ -27,9 +28,10 @@ export async function registrarUsuario({ nombre, correo, contrasena }) {
         correo: correoNormalizado
     }
 
+    const perfil = crearPerfilSimulado(usuario)
     cuentas = [...cuentas, { ...usuario, contrasena }]
 
-    return usuario
+    return perfil
 }
 
 export async function iniciarSesion({ correo, contrasena }) {
@@ -44,5 +46,5 @@ export async function iniciarSesion({ correo, contrasena }) {
         throw new Error("El correo o la contraseña son incorrectos.")
     }
 
-    return { id: cuenta.id, nombre: cuenta.nombre, correo: cuenta.correo }
+    return consultarPerfil(cuenta.id)
 }

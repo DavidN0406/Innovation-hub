@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { Navigate, Route, Routes, useNavigate } from "react-router"
 import Acceso from "./paginas/Acceso.jsx"
+import Perfil from "./paginas/Perfil.jsx"
+import Usuarios from "./paginas/Usuarios.jsx"
 
 import Pagina from "./componentes/layout/Pagina.jsx"
 import Inicio from "./paginas/Inicio.jsx"
@@ -16,8 +18,6 @@ const rutasPendientes = [
     { ruta: "/iniciativas/:id/solicitar", titulo: "Solicitar participación" },
     { ruta: "/iniciativas/:id/equipo", titulo: "Equipo de la iniciativa" },
     { ruta: "/iniciativas/:id/convertir", titulo: "Convertir en proyecto" },
-    { ruta: "/perfil", titulo: "Mi perfil" },
-    { ruta: "/usuarios", titulo: "Buscar usuarios" },
     { ruta: "/mis-solicitudes", titulo: "Mis solicitudes" },
     { ruta: "/solicitudes-recibidas", titulo: "Solicitudes recibidas" },
     { ruta: "/proyectos", titulo: "Proyectos" },
@@ -28,6 +28,11 @@ const rutasPendientes = [
 function App() {
     const [usuario, setUsuario] = useState(null)
     const navegar = useNavigate()
+
+    function actualizarUsuario(perfil) {
+        // Una respuesta pendiente no debe restaurar una sesión ya cerrada.
+        setUsuario((actual) => actual?.id === perfil.id ? perfil : actual)
+    }
 
     function cerrarSesion() {
         setUsuario(null)
@@ -45,6 +50,15 @@ function App() {
                 <Route path="/login" element={usuario
                     ? <Navigate to="/" replace />
                     : <Acceso key="login" onAutenticar={setUsuario} />}
+                />
+
+                <Route path="/perfil" element={usuario
+                    ? <Perfil key={usuario.id} usuarioId={usuario.id} onActualizar={actualizarUsuario} />
+                    : <Navigate to="/login" replace />}
+                />
+                <Route path="/usuarios" element={usuario
+                    ? <Usuarios />
+                    : <Navigate to="/login" replace />}
                 />
 
                 {rutasPendientes.map(function (ruta) {
