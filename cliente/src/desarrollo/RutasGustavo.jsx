@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router'
 import MisSolicitudes from '../paginas/MisSolicitudes.jsx'
 import NuevaSolicitud from '../paginas/NuevaSolicitud.jsx'
+import SolicitudesRecibidas from '../paginas/SolicitudesRecibidas.jsx'
 import NoEncontrada from '../paginas/NoEncontrada.jsx'
 
 export default function RutasGustavo({ usuario }) {
@@ -8,6 +9,7 @@ export default function RutasGustavo({ usuario }) {
   return <Routes>
     <Route path="/" element={<p>Seleccione una pantalla del menú para comenzar.</p>} />
     <Route path="/mis-solicitudes" element={<MisSolicitudes usuario={usuario} />} />
+    <Route path="/solicitudes-recibidas" element={<SolicitudesRecibidas usuario={usuario} />} />
     <Route path="/solicitudes/nueva" element={<NuevaSolicitud usuario={usuario} />} />
     <Route path="/iniciativas/:id/solicitar" element={<NuevaSolicitud usuario={usuario} />} />
     <Route path="*" element={<NoEncontrada />} />
