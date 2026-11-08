@@ -18,7 +18,7 @@ Innovation Hub es una aplicación web donde la comunidad universitaria publica i
 
 ## Estado del Avance 2 y trabajo de Gustavo
 
-El cliente React incluye catálogo, detalle y perfiles de desarrollo. La rama de Gustavo incorpora solicitudes, equipo, conversión, proyectos y GitHub en una entrada independiente, como se acordó para evitar cambios en `App.jsx`. El servidor todavía no está implementado: la demostración no sustituye persistencia MongoDB ni autenticación real. La [revisión detallada](docs/revision-avance2.md) enumera lo comprobado y lo pendiente para la entrega completa.
+El cliente React incluye catálogo, detalle y perfiles de desarrollo. La rama de Gustavo incorpora solicitudes, equipo, conversión, proyectos y GitHub en una entrada independiente, como se acordó para evitar cambios en `App.jsx`. El servidor de Jorge incorpora API Express, persistencia MongoDB, autenticación y permisos reales en los commits J1-J10. La integración de esos servicios con las pantallas simuladas del cliente continúa pendiente en D7; la demostración aislada no sustituye ese recorrido integrado. La [revisión detallada](docs/revision-avance2.md) enumera lo comprobado y lo pendiente para la entrega completa.
 
 ### Instalar y ejecutar el cliente
 
@@ -65,17 +65,34 @@ Las compilaciones generan `dist/` y `dist-gustavo/`, fuera de Git. Compilar no a
 
 ### Servidor, MongoDB y cierre de entrega
 
-`servidor/` contiene únicamente `.gitkeep`; no hay dependencias, variables ni scripts del servidor que puedan ejecutarse todavía. No ejecutar `npm start` allí esperando una API. El responsable del backend debe incorporar su `package.json`, `.env.example`, conexión MongoDB, semillas, scripts y contrato antes de completar esta sección.
+El servidor ya está implementado en `servidor/`. Requiere Node.js 22 o superior y MongoDB con replica set para confirmar aceptación/equipo y conversión/proyecto de forma atómica. La [guía de ejecución del servidor](servidor/README.md) explica instalación, variables privadas, MongoDB, semillas y Postman.
 
-La configuración propuesta debe incluir conexión MongoDB (por ejemplo `MONGODB_URI=mongodb://127.0.0.1:27017/innovation_hub`), puerto y origen permitido del cliente. Son decisiones pendientes del servidor, no variables ya implementadas. Para la integración, levantar una instancia local de MongoDB con una base de pruebas, configurar su URI solo en el servidor, cargar las semillas que entregue el equipo y arrancar la API con sus scripts documentados. El navegador nunca conecta directamente a MongoDB.
+Desde la raíz, después de preparar MongoDB:
+
+```powershell
+cd servidor
+npm ci
+Copy-Item .env.example .env
+# Configurar MONGODB_URI, CLIENT_ORIGIN y un SESSION_SECRET propio en .env.
+npm run dev
+```
+
+Para datos reproducibles usar una base terminada en `_demo`, configurar `SEED_PASSWORD` y ejecutar `npm run seed -- --confirmar-demo`. Las pruebas automáticas usan otra instancia MongoDB temporal y no modifican esa base. Ejecutar `npm run lint` y `npm test` desde `servidor/`.
 
 Documentación de esta parte:
 
-- [Contrato de participación propuesto](docs/api-participacion-propuesta.md): rutas, verbos, campos, respuestas, permisos y códigos.
-- [Colección Postman de 38 casos](pruebas/participacion.postman_collection.json) e [instrucciones de datos y ejecución](pruebas/README.md). Ejecución contra servidor real pendiente.
-- [Revisión y pendientes de entrega](docs/revision-avance2.md): contrato general, API, persistencia, integración y pruebas reales.
+- [Contrato completo de la API](docs/api-contract.md): rutas, campos, códigos, permisos, filtros, estados y diferencias de integración.
+- [Modelo de datos y decisiones de persistencia](docs/modelo-datos.md).
+- [Guía explicada de los commits J1-J10 y del recorrido de cada petición](docs/guia-servidor-j.md).
+- [Revisión y resultados de las pruebas del servidor](docs/revision-servidor-j.md).
+- [Colección original de participación, 38 casos](pruebas/participacion.postman_collection.json), conservada sin cambios, y [colección adicional del servidor, 27 casos](pruebas/servidor.postman_collection.json). Ambas ejecutadas contra HTTP/MongoDB reales dentro de las pruebas automáticas; las claves y cookies se inyectan en memoria.
+- [Propuesta histórica de participación](docs/api-participacion-propuesta.md), [guía de integración de Gustavo](docs/integracion-gustavo.md) y [revisión histórica del 7 de noviembre](docs/revision-avance2.md).
 
-El equipo debe acordar `docs/api-contract.md` y `docs/modelo-datos.md`, comprobar cliente-servidor-MongoDB, ejecutar la colección completa y solo entonces crear `entrega-2` sobre el commit entregado. Esta rama no crea una etiqueta de entrega sobre una demostración parcial. Los commits nuevos mantienen sus fechas reales.
+El código de `cliente/` y `avance1/` se conserva. En el estado recibido, los servicios de autenticación, perfiles e iniciativas usan simulación y `App.jsx` mantiene rutas de participación pendientes. D7 debe conectar esos servicios al contrato y a la sesión real, ampliar los formularios a las reglas documentadas e integrar navegación. Cambiar solamente `VITE_PARTICIPACION_MOCK=false` no completa ese trabajo.
+
+El cierre comprobó 17 escenarios automáticos de servidor, las 65 peticiones de Postman, los 19 tests existentes del cliente, su análisis estático y ambas compilaciones. El cliente se verificó con Node 24.22.1; react-router exige Node >=22.22.0, por encima del Node 22.17.0 instalado por defecto en este equipo. Persisten avisos previos de deprecación de Sass, sin errores de compilación.
+
+Antes de crear `entrega-2`, el equipo debe completar y probar el recorrido React-servidor-MongoDB desde las pantallas. Estos commits mantienen sus fechas reales y no crean una etiqueta de entrega sobre una integración pendiente.
 
 ## Prototipo del Avance 1
 

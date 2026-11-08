@@ -1,0 +1,942 @@
+{
+  "info": {
+    "name": "Innovation Hub - Servidor J1-J10",
+    "description": "Ejecutar sobre semillas de una base _demo. Configurar clavePruebas localmente; no exportar claves ni cookies. Complementa la coleccion de participacion sin modificarla.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "clavePruebas",
+      "value": ""
+    },
+    {
+      "key": "cookiePropietario",
+      "value": ""
+    },
+    {
+      "key": "iniciativaCreadaId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Autenticacion: login correcto y captura de sesion",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"correo\": \"propietario@example.test\",\n  \"contrasena\": \"{{clavePruebas}}\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "if (pm.response.code === 200) pm.collectionVariables.set('cookiePropietario', pm.response.headers.get('Set-Cookie').split(';')[0]);",
+              "pm.test('Sin hash', () => pm.expect(pm.response.json()).not.to.have.property('hash'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autenticacion: datos invalidos",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"correo\": \"invalido\",\n  \"contrasena\": \"{{clavePruebas}}\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autenticacion: cuenta inexistente sin revelar su existencia",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"correo\": \"inexistente@example.test\",\n  \"contrasena\": \"{{clavePruebas}}\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autenticacion: consulta sin sesion",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autenticacion: consulta de sesion vigente",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON', () => pm.response.to.be.json);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios: perfil correcto",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/users/demo-propietario"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON', () => pm.response.to.be.json);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios: perfil invalido",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/users/demo-propietario",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios: perfil inexistente",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/users/inexistente"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 404', () => pm.response.to.have.status(404));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios: sin sesion",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/users/demo-propietario"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios: filtros combinados y paginacion",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/users?skill=React&available=true&career=Software&page=1&size=2"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON', () => pm.response.to.be.json);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "skills: peticion correcta",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/skills?page=1&size=2"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON', () => pm.response.to.be.json);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "skills: paginacion invalida",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/skills?size=0"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "skills: inexistente",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/skills/inexistente"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 404', () => pm.response.to.have.status(404));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "skills: sin sesion",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/skills"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "categories: peticion correcta",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/categories?page=1&size=2"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON', () => pm.response.to.be.json);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "categories: paginacion invalida",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/categories?size=0"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "categories: inexistente",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/categories/inexistente"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 404', () => pm.response.to.have.status(404));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "categories: sin sesion",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/categories"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Iniciativas: crear correctamente",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/initiatives",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Iniciativa de la coleccion del servidor\",\n  \"tipo\": \"Idea\",\n  \"resumen\": \"Resumen suficientemente largo para probar el registro de iniciativas.\",\n  \"descripcion\": \"Descripcion detallada de la iniciativa para probar el ciclo completo de creacion y eliminacion.\",\n  \"problema\": \"Se necesita probar el contrato completo.\",\n  \"beneficiarios\": \"Estudiantes\",\n  \"categoria\": \"Tecnología\",\n  \"competencias\": [\n    \"React\"\n  ],\n  \"participantesEstimados\": 3,\n  \"visibilidad\": \"publica\",\n  \"etiquetas\": [\n    \"postman\"\n  ]\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "if (pm.response.code === 201) pm.collectionVariables.set('iniciativaCreadaId', pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Iniciativas: formulario invalido",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/initiatives",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Iniciativas: recurso inexistente",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/initiatives/inexistente"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 404', () => pm.response.to.have.status(404));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Iniciativas: crear sin sesion",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/initiatives",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Iniciativa de la coleccion del servidor\",\n  \"tipo\": \"Idea\",\n  \"resumen\": \"Resumen suficientemente largo para probar el registro de iniciativas.\",\n  \"descripcion\": \"Descripcion detallada de la iniciativa para probar el ciclo completo de creacion y eliminacion.\",\n  \"problema\": \"Se necesita probar el contrato completo.\",\n  \"beneficiarios\": \"Estudiantes\",\n  \"categoria\": \"Tecnología\",\n  \"competencias\": [\n    \"React\"\n  ],\n  \"participantesEstimados\": 3,\n  \"visibilidad\": \"publica\",\n  \"etiquetas\": [\n    \"postman\"\n  ]\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Iniciativas: detalle desde el identificador creado",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/initiatives/{{iniciativaCreadaId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON', () => pm.response.to.be.json);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Iniciativas: modificar como propietario",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/initiatives/{{iniciativaCreadaId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Titulo actualizado desde Postman\",\n  \"tipo\": \"Idea\",\n  \"resumen\": \"Resumen suficientemente largo para probar el registro de iniciativas.\",\n  \"descripcion\": \"Descripcion detallada de la iniciativa para probar el ciclo completo de creacion y eliminacion.\",\n  \"problema\": \"Se necesita probar el contrato completo.\",\n  \"beneficiarios\": \"Estudiantes\",\n  \"categoria\": \"Tecnología\",\n  \"competencias\": [\n    \"React\"\n  ],\n  \"participantesEstimados\": 3,\n  \"visibilidad\": \"publica\",\n  \"etiquetas\": [\n    \"postman\"\n  ]\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('JSON', () => pm.response.to.be.json);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Iniciativas: eliminar sin relaciones",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/initiatives/{{iniciativaCreadaId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 204', () => pm.response.to.have.status(204));",
+              "pm.test('Sin contenido', () => pm.expect(pm.response.text()).to.eql(''));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autenticacion: logout invalida acceso",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/logout"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 204', () => pm.response.to.have.status(204));",
+              "pm.test('Sin contenido', () => pm.expect(pm.response.text()).to.eql(''));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autenticacion: cookie anterior revocada",
+      "protocolProfileBehavior": {
+        "disableCookies": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "{{cookiePropietario}}"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));",
+              "pm.test('JSON', () => pm.response.to.be.json);",
+              "pm.test('Error uniforme', () => { const error = pm.response.json().error; pm.expect(error.code).to.be.a('string'); pm.expect(error.message).to.be.a('string'); pm.expect(error.fields).to.be.an('object'); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
