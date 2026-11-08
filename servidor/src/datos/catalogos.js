@@ -1,0 +1,7 @@
+export const tipos = ['Idea', 'Necesidad', 'Reto']; // Conserva los tres tipos que usa el formulario de iniciativas.
+export const visibilidades = ['publica', 'institucional', 'restringida', 'privada']; // Representa los cuatro niveles definidos por el documento general.
+export const estadosIniciativa = ['Borrador', 'Publicada', 'En formación de equipo', 'Convertida', 'Archivada']; // Usa Convertida como codigo compatible con el cliente para Convertida en proyecto.
+export const estadosSolicitud = ['pendiente', 'aceptada', 'rechazada', 'cancelada']; // Mantiene los codigos que las pantallas de Gustavo ya interpretan.
+export const estadosProyecto = ['planificado', 'en_progreso', 'pausado', 'finalizado', 'archivado']; // Traduce los estados del dominio a codigos estables sin espacios.
+export const categorias = ['Tecnología', 'Educación', 'Sostenibilidad', 'Impacto social', 'Negocios y emprendimiento', 'Salud y bienestar', 'Cultura y creatividad', 'Otro', 'Salud', 'Medio ambiente', 'Gestión comunitaria', 'Emprendimiento']; // Incluye las ocho categorias obligatorias y conserva las cuatro anteriores del cliente.
+export const competencias = ['JavaScript', 'React', 'Node.js', 'Diseño de interfaces', 'Bases de datos', 'Gestión de proyectos', 'Redacción', 'Marketing digital', 'Análisis de datos', 'Fotografía']; // Comparte el vocabulario existente sin alterar los formularios de los companeros.
