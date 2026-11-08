@@ -183,6 +183,16 @@ La tabla siguiente conserva el resumen histórico del repositorio. Para consulta
 | 40 | 2026-11-06 | 46ebee2 | Implementar registro e inicio y cierre de sesion |
 | 41 | 2026-11-06 | 86fced6 | Implementar perfiles y busqueda de usuarios |
 | 42 | 2026-11-07 | dac17cf | Implementar catalogo de iniciativas en React |
+| 43 | 2026-11-07 | 50c4375 | Implementar detalle de iniciativa |
+| 44 | 2026-11-07 | 4acb875 | Preparar servicios y vista de desarrollo de Gustavo |
+| 45 | 2026-11-07 | 9468319 | Implementar pantalla de mis solicitudes |
+| 46 | 2026-11-07 | 73e080a | Implementar pantalla de solicitudes recibidas |
+| 47 | 2026-11-07 | 3ef5e2f | Implementar pantalla de gestion del equipo |
+| 48 | 2026-11-07 | 0fa8508 | Implementar formulario de conversion a proyecto |
+| 49 | 2026-11-07 | bfa0291 | Implementar listado y detalle de proyectos |
+| 50 | 2026-11-07 | 133687c | Mostrar informacion de repositorios desde GitHub |
+| 51 | 2026-11-07 | 65bed79 | Crear coleccion de pruebas de la API |
+| 52 | 2026-11-07 | e49b8d7 | Completar README y documentacion de entrega |
 
 <!-- FIN TABLA COMMITS -->
 

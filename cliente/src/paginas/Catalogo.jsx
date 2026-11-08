@@ -4,7 +4,8 @@ import { buscarIniciativas } from "../servicios/iniciativas.js"
 import TarjetaIniciativa from "../componentes/iniciativas/TarjetaIniciativa.jsx"
 
 const filtrosIniciales = {
-    texto: "", tipo: "", categoria: "", competencia: "", orden: "fecha-desc", tamano: 3
+    texto: "", tipo: "", categoria: "", competencia: "", orden: "fecha-desc", tamano: 3,
+    soloPropias: false, incluirArchivadas: false
 }
 
 const selectores = [
@@ -13,7 +14,8 @@ const selectores = [
     { nombre: "competencia", etiqueta: "Competencia requerida", opciones: competenciasCatalogo }
 ]
 
-function Catalogo() {
+function Catalogo({ usuario }) {
+    const usuarioId = usuario?.id ?? null
     const [filtros, setFiltros] = useState({ ...filtrosIniciales })
     const [consulta, setConsulta] = useState({ ...filtrosIniciales, pagina: 1 })
     const [resultado, setResultado] = useState(null)
@@ -23,19 +25,28 @@ function Catalogo() {
     useEffect(() => {
         let activo = true
 
-        buscarIniciativas(consulta)
+        buscarIniciativas(consulta, { usuarioId })
             .then((datos) => { if (activo) setResultado(datos) })
             .catch((error) => { if (activo) setError(error.message) })
             .finally(() => { if (activo) setCargando(false) })
 
         return () => { activo = false }
-    }, [consulta])
+    }, [consulta, usuarioId])
 
     function cambiarFiltro(evento) {
         const { name, value } = evento.target
         setFiltros((anteriores) => ({
             ...anteriores,
             [name]: name === "tamano" ? Number(value) : value
+        }))
+    }
+
+    function cambiarAmbito(evento) {
+        const { name, checked } = evento.target
+        setFiltros((anteriores) => ({
+            ...anteriores,
+            [name]: checked,
+            ...(name === "soloPropias" && !checked ? { incluirArchivadas: false } : {})
         }))
     }
 
@@ -59,7 +70,7 @@ function Catalogo() {
         <div className="py-4">
             <h1 className="mb-4">Catálogo de iniciativas</h1>
             {import.meta.env.DEV && (
-                <p className="alert alert-info">Catálogo de prueba con iniciativas públicas del avance 1.</p>
+                <p className="alert alert-info">Datos de prueba en memoria. Las iniciativas nuevas y sus cambios se pierden al recargar.</p>
             )}
 
             <div className="row g-4">
@@ -107,6 +118,22 @@ function Catalogo() {
                                     <option value={9}>9</option>
                                 </select>
                             </div>
+                            {usuario && (
+                                <div className="mb-3">
+                                    <div className="form-check">
+                                        <input id="filtro-propias" name="soloPropias" type="checkbox" className="form-check-input"
+                                            checked={filtros.soloPropias} onChange={cambiarAmbito} />
+                                        <label htmlFor="filtro-propias" className="form-check-label">Solo mis iniciativas</label>
+                                    </div>
+                                    {filtros.soloPropias && (
+                                        <div className="form-check mt-2">
+                                            <input id="filtro-archivadas" name="incluirArchivadas" type="checkbox" className="form-check-input"
+                                                checked={filtros.incluirArchivadas} onChange={cambiarAmbito} />
+                                            <label htmlFor="filtro-archivadas" className="form-check-label">Incluir archivadas</label>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                             <div className="d-grid gap-2">
                                 <button type="submit" className="btn btn-primary" disabled={cargando}>
                                     Aplicar filtros

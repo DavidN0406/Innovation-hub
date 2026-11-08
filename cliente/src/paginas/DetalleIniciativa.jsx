@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router"
-import { consultarIniciativa } from "../servicios/iniciativas.js"
+import { archivarIniciativa, consultarIniciativa } from "../servicios/iniciativas.js"
+import useOperacion from "../hooks/useOperacion.js"
+import ErrorOperacion from "../componentes/participacion/ErrorOperacion.jsx"
 
 function formatearFecha(fecha) {
     return new Date(`${fecha}T00:00:00`).toLocaleDateString("es-CR", {
@@ -14,6 +16,8 @@ function ContenidoDetalle({ id, usuario }) {
     const [cargando, setCargando] = useState(true)
     const [error, setError] = useState(null)
     const [intento, setIntento] = useState(0)
+    const [aviso, setAviso] = useState("")
+    const operacion = useOperacion()
 
     useEffect(() => {
         let activo = true
@@ -32,6 +36,14 @@ function ContenidoDetalle({ id, usuario }) {
         setCargando(true)
         setError(null)
         setIntento((anterior) => anterior + 1)
+    }
+
+    function archivar() {
+        if (!window.confirm(`¿Archivar «${iniciativa.titulo}»? Saldrá del catálogo activo y se conservará su información.`)) return
+        operacion.ejecutar((signal) => archivarIniciativa(id, usuario, { signal }), () => {
+            setAviso("Iniciativa archivada. Puede consultarla en el catálogo marcando Solo mis iniciativas e Incluir archivadas.")
+            reintentar()
+        })
     }
 
     if (cargando) {
@@ -146,15 +158,22 @@ function ContenidoDetalle({ id, usuario }) {
                 </div>
             )}
 
+            {aviso && <p className="alert alert-success mt-4" role="status">{aviso}</p>}
+            <ErrorOperacion error={operacion.error} />
             <div className="mt-4 d-flex flex-wrap gap-2">
                 {permisos.puedeSolicitar && (
                     <Link to={`${ruta}/solicitar`} className="btn btn-primary">Solicitar participación</Link>
                 )}
-                {!usuario && iniciativa.estado !== "Archivada" && (
+                {!usuario && !["Archivada", "Convertida"].includes(iniciativa.estado) && (
                     <Link to="/login" className="btn btn-primary">Iniciar sesión para participar</Link>
                 )}
                 {permisos.puedeEditar && (
                     <Link to={`${ruta}/editar`} className="btn btn-outline-primary">Editar iniciativa</Link>
+                )}
+                {permisos.puedeArchivar && (
+                    <button type="button" className="btn btn-outline-danger" onClick={archivar} disabled={operacion.ocupado}>
+                        {operacion.ocupado ? "Archivando…" : "Archivar iniciativa"}
+                    </button>
                 )}
                 {permisos.puedeVerEquipo && (
                     <Link to={`${ruta}/equipo`} className="btn btn-outline-primary">Ver equipo</Link>

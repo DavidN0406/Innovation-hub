@@ -5,6 +5,7 @@ import Perfil from "./paginas/Perfil.jsx"
 import Usuarios from "./paginas/Usuarios.jsx"
 import Catalogo from "./paginas/Catalogo.jsx"
 import DetalleIniciativa from "./paginas/DetalleIniciativa.jsx"
+import RegistroIniciativa from "./paginas/RegistroIniciativa.jsx"
 
 import Pagina from "./componentes/layout/Pagina.jsx"
 import Inicio from "./paginas/Inicio.jsx"
@@ -13,8 +14,6 @@ import NoEncontrada from "./paginas/NoEncontrada.jsx"
 
 // Rutas preparadas para las funcionalidades del avance.
 const rutasPendientes = [
-    { ruta: "/iniciativas/nueva", titulo: "Registrar iniciativa" },
-    { ruta: "/iniciativas/:id/editar", titulo: "Editar iniciativa" },
     { ruta: "/iniciativas/:id/solicitar", titulo: "Solicitar participación" },
     { ruta: "/iniciativas/:id/equipo", titulo: "Equipo de la iniciativa" },
     { ruta: "/iniciativas/:id/convertir", titulo: "Convertir en proyecto" },
@@ -43,8 +42,16 @@ function App() {
         <Pagina usuario={usuario} onCerrarSesion={cerrarSesion}>
             <Routes>
                 <Route path="/" element={<Inicio />} />
-                <Route path="/catalogo" element={<Catalogo />} />
+                <Route path="/catalogo" element={<Catalogo key={usuario?.id ?? "visitante"} usuario={usuario} />} />
                 <Route path="/iniciativas/:id" element={<DetalleIniciativa usuario={usuario} />} />
+                <Route path="/iniciativas/nueva" element={usuario
+                    ? <RegistroIniciativa usuario={usuario} />
+                    : <Navigate to="/login" replace />}
+                />
+                <Route path="/iniciativas/:id/editar" element={usuario
+                    ? <RegistroIniciativa usuario={usuario} />
+                    : <Navigate to="/login" replace />}
+                />
                 <Route path="/registro" element={usuario
                     ? <Navigate to="/" replace />
                     : <Acceso key="registro" registro onAutenticar={setUsuario} />}

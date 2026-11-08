@@ -1,12 +1,47 @@
 import { iniciativasIniciales } from "../datos/iniciativasSimuladas.js"
 import { simularRespuesta } from "./simulacion.js"
+import { normalizarIniciativa, validarIniciativa } from "./validacionIniciativa.js"
 
-const iniciativas = structuredClone(iniciativasIniciales)
+let iniciativas = structuredClone(iniciativasIniciales)
 
 function errorNoDisponible() {
     const error = new Error("La iniciativa no existe o no está disponible.")
     error.estado = 404
     return error
+}
+
+function fallo(estado, mensaje, campos = {}) {
+    return Object.assign(new Error(mensaje), { estado, campos })
+}
+
+async function esperarRespuesta(signal) {
+    if (!import.meta.env.DEV) {
+        throw new Error("Los servicios de iniciativas todavía no están conectados con la API real.")
+    }
+    signal?.throwIfAborted()
+    await simularRespuesta(null)
+    signal?.throwIfAborted()
+}
+
+function exigirUsuario(usuario) {
+    if (!usuario?.id || typeof usuario.nombre !== "string" || !usuario.nombre.trim()) {
+        throw fallo(401, "Inicie sesión para continuar.")
+    }
+}
+
+function obtenerPropia(id, usuario) {
+    exigirUsuario(usuario)
+    const iniciativa = iniciativas.find((actual) => String(actual.id) === String(id))
+    if (!iniciativa) throw errorNoDisponible()
+    if (String(iniciativa.propietarioId) !== String(usuario.id)) {
+        throw fallo(403, "Solo el propietario puede modificar esta iniciativa.")
+    }
+    return iniciativa
+}
+
+function comprobarFormulario(datos) {
+    const campos = validarIniciativa(datos)
+    if (Object.keys(campos).length) throw fallo(400, "Revise los campos indicados.", campos)
 }
 
 function normalizar(texto) {
@@ -15,23 +50,25 @@ function normalizar(texto) {
 
 export async function buscarIniciativas({
     texto = "", tipo = "", categoria = "", competencia = "",
-    orden = "fecha-desc", pagina = 1, tamano = 3
-} = {}) {
-    if (!import.meta.env.DEV) {
-        throw new Error("El catálogo todavía no está conectado con la API real.")
-    }
-
-    await simularRespuesta(null)
+    orden = "fecha-desc", pagina = 1, tamano = 3,
+    soloPropias = false, incluirArchivadas = false
+} = {}, { usuarioId = null, signal } = {}) {
+    await esperarRespuesta(signal)
+    if (soloPropias && !usuarioId) throw fallo(401, "Inicie sesión para consultar sus iniciativas.")
+    if (incluirArchivadas && !soloPropias) throw fallo(400, "Las archivadas solo se consultan entre sus propias iniciativas.")
     const busqueda = normalizar(texto)
 
-    // Este catálogo de prueba muestra solo las iniciativas públicas.
-    // Los cuatro niveles de acceso se integrarán según el contrato de la API.
+    // Catálogo público o iniciativas del propietario actual, incluidas las restringidas.
+    // Los permisos reales y los cuatro niveles se implementarán en la API.
     const encontradas = iniciativas.filter((iniciativa) => {
         const coincideTexto = normalizar(iniciativa.titulo).includes(busqueda) ||
             normalizar(iniciativa.resumen).includes(busqueda)
 
-        return iniciativa.visibilidad === "publica" &&
-            iniciativa.estado !== "Archivada" &&
+        const visible = soloPropias
+            ? String(iniciativa.propietarioId) === String(usuarioId)
+            : iniciativa.visibilidad === "publica"
+        return visible &&
+            (incluirArchivadas || iniciativa.estado !== "Archivada") &&
             coincideTexto &&
             (!tipo || iniciativa.tipo === tipo) &&
             (!categoria || iniciativa.categoria === categoria) &&
@@ -66,12 +103,8 @@ export async function buscarIniciativas({
 
 // Simula los niveles del avance 1. La API real determinará los permisos
 // de los cuatro niveles; recibir un usuarioId aquí no autentica a nadie.
-export async function consultarIniciativa(id, usuarioId = null) {
-    if (!import.meta.env.DEV) {
-        throw new Error("El detalle todavía no está conectado con la API real.")
-    }
-
-    await simularRespuesta(null)
+export async function consultarIniciativa(id, usuarioId = null, { signal } = {}) {
+    await esperarRespuesta(signal)
     const iniciativa = iniciativas.find((actual) => String(actual.id) === String(id))
     if (!iniciativa) throw errorNoDisponible()
 
@@ -80,6 +113,7 @@ export async function consultarIniciativa(id, usuarioId = null) {
     const esMiembro = usuarioId != null && iniciativa.equipo.some((miembro) =>
         miembro.usuarioId != null && String(miembro.usuarioId) === String(usuarioId))
     const archivada = iniciativa.estado === "Archivada"
+    const cerrada = archivada || iniciativa.estado === "Convertida"
     const accesoCompleto = iniciativa.visibilidad === "publica" || esPropietario
 
     if ((archivada && !esPropietario) ||
@@ -91,11 +125,12 @@ export async function consultarIniciativa(id, usuarioId = null) {
         miembro.usuarioId != null && String(miembro.usuarioId) !== String(iniciativa.propietarioId))
 
     const permisos = {
-        puedeEditar: esPropietario && !archivada,
-        puedeSolicitar: usuarioId != null && !esPropietario && !esMiembro && !archivada,
+        puedeEditar: esPropietario && !cerrada,
+        puedeArchivar: esPropietario && !archivada,
+        puedeSolicitar: usuarioId != null && !esPropietario && !esMiembro && !cerrada,
         puedeVerEquipo: accesoCompleto,
-        puedeConvertir: esPropietario && tieneOtroMiembro && !archivada,
-        faltaMiembroParaConvertir: esPropietario && !tieneOtroMiembro && !archivada
+        puedeConvertir: esPropietario && tieneOtroMiembro && !cerrada,
+        faltaMiembroParaConvertir: esPropietario && !tieneOtroMiembro && !cerrada
     }
 
     // La pantalla recibe solo el resumen cuando no tiene acceso completo.
@@ -110,4 +145,42 @@ export async function consultarIniciativa(id, usuarioId = null) {
     }
 
     return structuredClone({ ...datos, accesoCompleto, permisos })
+}
+
+
+// Operaciones de desarrollo en memoria. La API verificará la sesión y propiedad reales.
+export async function crearIniciativa(datos, usuario, { signal } = {}) {
+    await esperarRespuesta(signal)
+    exigirUsuario(usuario)
+    comprobarFormulario(datos)
+    const nueva = {
+        ...normalizarIniciativa(datos),
+        id: crypto.randomUUID(), propietarioId: usuario.id, autor: usuario.nombre,
+        fechaPublicacion: new Date().toISOString().slice(0, 10), estado: "Abierta",
+        equipo: [{ usuarioId: usuario.id, nombre: usuario.nombre, rol: "Propietario" }]
+    }
+    iniciativas = [...iniciativas, nueva]
+    return structuredClone(nueva)
+}
+
+export async function actualizarIniciativa(id, datos, usuario, { signal } = {}) {
+    await esperarRespuesta(signal)
+    const actual = obtenerPropia(id, usuario)
+    if (["Archivada", "Convertida"].includes(actual.estado)) {
+        throw fallo(409, "Esta iniciativa ya está archivada o convertida y no admite edición.")
+    }
+    comprobarFormulario(datos)
+    const actualizada = { ...actual, ...normalizarIniciativa(datos) }
+    iniciativas = iniciativas.map((iniciativa) => String(iniciativa.id) === String(id) ? actualizada : iniciativa)
+    return structuredClone(actualizada)
+}
+
+export async function archivarIniciativa(id, usuario, { signal } = {}) {
+    await esperarRespuesta(signal)
+    const actual = obtenerPropia(id, usuario)
+    if (actual.estado === "Archivada") throw fallo(409, "La iniciativa ya está archivada.")
+    // Se conserva la información y sus relaciones; no se realiza eliminación física.
+    const archivada = { ...actual, estado: "Archivada" }
+    iniciativas = iniciativas.map((iniciativa) => String(iniciativa.id) === String(id) ? archivada : iniciativa)
+    return structuredClone(archivada)
 }
