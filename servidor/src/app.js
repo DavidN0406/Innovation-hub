@@ -8,6 +8,7 @@ import { cargarActor } from './middleware/sesion.js'; // Obtiene una identidad a
 import { rutasAutenticacion } from './rutas/autenticacion.js'; // Monta registro, acceso, consulta y cierre de sesion.
 import { rutasUsuarios } from './rutas/usuarios.js'; // Monta perfiles y busqueda de colaboradores autenticados.
 import { rutasCatalogos } from './rutas/catalogos.js'; // Monta competencias y categorias usadas por los formularios.
+import { rutasIniciativas } from './rutas/iniciativas.js'; // Monta el catalogo y las escrituras autorizadas de iniciativas.
 
 export function crearApp(configuracion) { // Construye la aplicacion sin abrir puertos para facilitar pruebas aisladas.
   const app = express(); // Crea una instancia independiente de Express.
@@ -28,6 +29,7 @@ export function crearApp(configuracion) { // Construye la aplicacion sin abrir p
   app.use('/api/auth', rutasAutenticacion); // Conecta las rutas de cuentas con las sesiones persistidas.
   app.use('/api/users', rutasUsuarios); // Conecta los perfiles con identidad y permisos del servidor.
   app.use('/api', rutasCatalogos); // Comparte el prefijo base para competencias y categorias.
+  app.use('/api/initiatives', rutasIniciativas); // Publica catalogo y detalle con control de visibilidad.
   app.use((req, res, next) => next(new ErrorHttp(404, 'NOT_FOUND', 'Ruta no encontrada.'))); // Normaliza las rutas inexistentes.
   app.use(manejarError); // Concentra al final la traduccion de todos los errores a HTTP/JSON.
   return app; // Entrega la aplicacion al arranque o a las pruebas.
