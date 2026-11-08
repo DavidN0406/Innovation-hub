@@ -1,0 +1,32 @@
+{
+  "name": "innovation-hub-servidor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "API del avance 2 de Innovation Hub",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "seed": "node src/semillas.js",
+    "test": "node --test --test-concurrency=1 pruebas/*.test.js",
+    "lint": "oxlint --deny-warnings src pruebas"
+  },
+  "dependencies": {
+    "connect-mongo": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
+    "express-session": "^1.18.2",
+    "mongoose": "^8.19.1"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^10.2.1",
+    "newman": "^6.2.3",
+    "oxlint": "^1.92.0",
+    "supertest": "^7.1.4"
+  }
+}
