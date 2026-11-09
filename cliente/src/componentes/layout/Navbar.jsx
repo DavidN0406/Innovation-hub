@@ -5,10 +5,13 @@ const enlaces = [
     { texto: "Catálogo", ruta: "/catalogo" },
     { texto: "Registrar iniciativa", ruta: "/iniciativas/nueva" },
     { texto: "Mi perfil", ruta: "/perfil" },
-    { texto: "Buscar usuarios", ruta: "/usuarios" }
+    { texto: "Buscar usuarios", ruta: "/usuarios" },
+    { texto: "Mis solicitudes", ruta: "/mis-solicitudes" },
+    { texto: "Solicitudes recibidas", ruta: "/solicitudes-recibidas" },
+    { texto: "Proyectos", ruta: "/proyectos" }
 ]
 
-function Navbar({ usuario, onCerrarSesion }) {
+function Navbar({ usuario, onCerrarSesion, cerrandoSesion }) {
     const [menuAbierto, setMenuAbierto] = useState(false)
 
     function alternarMenu() {
@@ -54,8 +57,8 @@ function Navbar({ usuario, onCerrarSesion }) {
                             (menuAbierto ? " show" : "")
                         }
                     >
-                        <ul className="navbar-nav ms-auto">
-                            {enlaces.map(function (enlace) {
+                        <ul className="navbar-nav ms-auto flex-wrap justify-content-end">
+                            {enlaces.filter(enlace => usuario || enlace.ruta === "/catalogo").map(function (enlace) {
                                 return (
                                     <li
                                         className="nav-item"
@@ -76,11 +79,12 @@ function Navbar({ usuario, onCerrarSesion }) {
                                 <li className="nav-item d-flex align-items-center gap-2">
                                     <span className="navbar-text">{usuario.nombre}</span>
                                     <button type="button" className="btn btn-outline-light btn-sm"
+                                        disabled={cerrandoSesion}
                                         onClick={() => {
                                             cerrarMenu()
                                             onCerrarSesion()
                                         }}>
-                                        Cerrar sesión
+                                        {cerrandoSesion ? "Cerrando…" : "Cerrar sesión"}
                                     </button>
                                 </li>
                             ) : (

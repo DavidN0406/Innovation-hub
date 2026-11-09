@@ -31,7 +31,7 @@ function EditarIniciativa({ id, usuario }) {
                 <EstadoConsulta consulta={consulta}>{(iniciativa) => {
                     if (!iniciativa.permisos.puedeEditar) return (
                         <p className="alert alert-warning" role="alert">
-                            La edición está disponible únicamente para el propietario de una iniciativa que no esté archivada ni convertida.
+                            La edición está disponible únicamente para el propietario de una iniciativa que no esté archivada.
                         </p>
                     )
                     return <FormularioIniciativa key={iniciativa.id} inicial={iniciativa}

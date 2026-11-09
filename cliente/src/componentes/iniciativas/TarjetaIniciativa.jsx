@@ -1,7 +1,7 @@
 import { Link } from "react-router"
 
 function TarjetaIniciativa({ iniciativa }) {
-    const fecha = iniciativa.fechaPublicacion.split("-").reverse().join("/")
+    const fecha = iniciativa.fechaPublicacion?.split("-").reverse().join("/")
 
     return (
         <article className="card h-100 tarjeta-iniciativa">
@@ -13,10 +13,10 @@ function TarjetaIniciativa({ iniciativa }) {
                 <h3 className="h5 card-title">{iniciativa.titulo}</h3>
                 <p className="small text-body-secondary mb-2">{iniciativa.categoria}</p>
                 <p className="card-text">{iniciativa.resumen}</p>
-                <p className="small mb-1">Publicado por <strong>{iniciativa.autor}</strong></p>
-                <p className="small text-body-secondary mb-3">
+                {iniciativa.autor && <p className="small mb-1">Publicado por <strong>{iniciativa.autor}</strong></p>}
+                {fecha && <p className="small text-body-secondary mb-3">
                     <time dateTime={iniciativa.fechaPublicacion}>{fecha}</time>
-                </p>
+                </p>}
                 <h4 className="h6">Competencias requeridas</h4>
                 {iniciativa.competencias.length === 0 ? (
                     <p className="small mb-0">Sin competencias especificadas.</p>

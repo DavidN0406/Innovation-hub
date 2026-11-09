@@ -15,6 +15,8 @@ function Detalle({ id, usuario }) {
         <dt>Descripción</dt><dd style={{ whiteSpace: 'pre-wrap' }}>{p.descripcion}</dd>
         <dt>Objetivo</dt><dd style={{ whiteSpace: 'pre-wrap' }}>{p.objetivo}</dd>
         <dt>Fecha de inicio</dt><dd><time dateTime={p.fechaInicio}>{p.fechaInicio}</time></dd>
+        <dt>Tecnologías</dt><dd>{p.tecnologias?.join(', ') || 'Sin especificar'}</dd>
+        <dt>Cierre estimado</dt><dd>{p.fechaFinEstimada || 'Sin especificar'}</dd>
         <dt>Estado</dt><dd>{p.estado}</dd>
         <dt>Iniciativa de origen</dt><dd>{p.iniciativa.titulo} (ID: {p.iniciativaId}) · <Link to={`/iniciativas/${encodeURIComponent(p.iniciativaId)}/equipo`}>Consultar equipo</Link></dd>
       </dl>

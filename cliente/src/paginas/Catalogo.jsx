@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react"
-import { categoriasIniciativa, competenciasCatalogo, tiposIniciativa } from "../datos/iniciativasSimuladas.js"
+import { tiposIniciativa, estadosIniciativa } from "../servicios/catalogos.js"
+import { visibilidadesIniciativa } from "../servicios/validacionIniciativa.js"
+import { useCatalogos } from "../contexto/useCatalogos.js"
 import { buscarIniciativas } from "../servicios/iniciativas.js"
 import TarjetaIniciativa from "../componentes/iniciativas/TarjetaIniciativa.jsx"
 
 const filtrosIniciales = {
     texto: "", tipo: "", categoria: "", competencia: "", orden: "fecha-desc", tamano: 3,
-    soloPropias: false, incluirArchivadas: false
+    soloPropias: false, estado: "", visibilidad: "", espacios: ""
 }
 
-const selectores = [
-    { nombre: "tipo", etiqueta: "Tipo", opciones: tiposIniciativa },
-    { nombre: "categoria", etiqueta: "Categoría", opciones: categoriasIniciativa },
-    { nombre: "competencia", etiqueta: "Competencia requerida", opciones: competenciasCatalogo }
-]
-
 function Catalogo({ usuario }) {
+    const { categorias, competencias } = useCatalogos()
+    const selectores = [
+        { nombre: "tipo", etiqueta: "Tipo", opciones: tiposIniciativa },
+        { nombre: "categoria", etiqueta: "Categoría", opciones: categorias },
+        { nombre: "competencia", etiqueta: "Competencia requerida", opciones: competencias }
+    ]
     const usuarioId = usuario?.id ?? null
     const [filtros, setFiltros] = useState({ ...filtrosIniciales })
     const [consulta, setConsulta] = useState({ ...filtrosIniciales, pagina: 1 })
@@ -24,13 +26,14 @@ function Catalogo({ usuario }) {
 
     useEffect(() => {
         let activo = true
+        const control = new AbortController()
 
-        buscarIniciativas(consulta, { usuarioId })
+        buscarIniciativas(consulta, { signal: control.signal })
             .then((datos) => { if (activo) setResultado(datos) })
             .catch((error) => { if (activo) setError(error.message) })
             .finally(() => { if (activo) setCargando(false) })
 
-        return () => { activo = false }
+        return () => { activo = false; control.abort() }
     }, [consulta, usuarioId])
 
     function cambiarFiltro(evento) {
@@ -45,8 +48,7 @@ function Catalogo({ usuario }) {
         const { name, checked } = evento.target
         setFiltros((anteriores) => ({
             ...anteriores,
-            [name]: checked,
-            ...(name === "soloPropias" && !checked ? { incluirArchivadas: false } : {})
+            [name]: checked
         }))
     }
 
@@ -69,9 +71,7 @@ function Catalogo({ usuario }) {
     return (
         <div className="py-4">
             <h1 className="mb-4">Catálogo de iniciativas</h1>
-            {import.meta.env.DEV && (
-                <p className="alert alert-info">Datos de prueba en memoria. Las iniciativas nuevas y sus cambios se pierden al recargar.</p>
-            )}
+
 
             <div className="row g-4">
                 <aside className="col-12 col-lg-3" aria-labelledby="titulo-filtros">
@@ -83,22 +83,44 @@ function Catalogo({ usuario }) {
                                 <input id="filtro-texto" name="texto" className="form-control"
                                     value={filtros.texto} onChange={cambiarFiltro}
                                     aria-describedby="ayuda-busqueda" />
-                                <small id="ayuda-busqueda">Busque por título o resumen.</small>
+                                <small id="ayuda-busqueda">Busque por título, resumen o etiquetas.</small>
                             </div>
                             {selectores.map((selector) => (
                                 <div className="mb-3" key={selector.nombre}>
                                     <label htmlFor={`filtro-${selector.nombre}`} className="form-label">
                                         {selector.etiqueta}
                                     </label>
+                                    {!usuario && selector.nombre !== "tipo" ? (
+                                        <input id={`filtro-${selector.nombre}`} name={selector.nombre} className="form-control"
+                                            placeholder="Nombre exacto" value={filtros[selector.nombre]} onChange={cambiarFiltro} />
+                                    ) : (
                                     <select id={`filtro-${selector.nombre}`} name={selector.nombre}
                                         className="form-select" value={filtros[selector.nombre]} onChange={cambiarFiltro}>
                                         <option value="">Cualquiera</option>
                                         {selector.opciones.map((opcion) => (
                                             <option value={opcion} key={opcion}>{opcion}</option>
                                         ))}
-                                    </select>
+                                    </select>)}
                                 </div>
                             ))}
+                            <div className="mb-3">
+                                <label htmlFor="filtro-estado" className="form-label">Estado</label>
+                                <select id="filtro-estado" name="estado" className="form-select" value={filtros.estado} onChange={cambiarFiltro}>
+                                    <option value="">Todos</option>{estadosIniciativa.map(estado => <option key={estado}>{estado}</option>)}
+                                </select>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="filtro-visibilidad" className="form-label">Visibilidad</label>
+                                <select id="filtro-visibilidad" name="visibilidad" className="form-select" value={filtros.visibilidad} onChange={cambiarFiltro}>
+                                    <option value="">Todas</option>{visibilidadesIniciativa.map(opcion => <option key={opcion.valor} value={opcion.valor}>{opcion.texto}</option>)}
+                                </select>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="filtro-espacios" className="form-label">Cupos</label>
+                                <select id="filtro-espacios" name="espacios" className="form-select" value={filtros.espacios} onChange={cambiarFiltro}>
+                                    <option value="">Cualquiera</option><option value="true">Con espacios</option><option value="false">Sin espacios</option>
+                                </select>
+                            </div>
                             <div className="mb-3">
                                 <label htmlFor="filtro-orden" className="form-label">Ordenar</label>
                                 <select id="filtro-orden" name="orden" className="form-select"
@@ -125,13 +147,7 @@ function Catalogo({ usuario }) {
                                             checked={filtros.soloPropias} onChange={cambiarAmbito} />
                                         <label htmlFor="filtro-propias" className="form-check-label">Solo mis iniciativas</label>
                                     </div>
-                                    {filtros.soloPropias && (
-                                        <div className="form-check mt-2">
-                                            <input id="filtro-archivadas" name="incluirArchivadas" type="checkbox" className="form-check-input"
-                                                checked={filtros.incluirArchivadas} onChange={cambiarAmbito} />
-                                            <label htmlFor="filtro-archivadas" className="form-check-label">Incluir archivadas</label>
-                                        </div>
-                                    )}
+                                    <small>Incluye sus archivadas. Use Estado para consultar una etapa concreta.</small>
                                 </div>
                             )}
                             <div className="d-grid gap-2">
@@ -161,6 +177,7 @@ function Catalogo({ usuario }) {
                         <>
                             <p role="status">Iniciativas encontradas: {resultado.total}</p>
                             <div className="row g-4">
+                                {!resultado.iniciativas.length && <p>No hay iniciativas en esta página. Regrese a la anterior.</p>}
                                 {resultado.iniciativas.map((iniciativa) => (
                                     <div className="col-12 col-md-6 col-xl-4" key={iniciativa.id}>
                                         <TarjetaIniciativa iniciativa={iniciativa} />
@@ -173,7 +190,7 @@ function Catalogo({ usuario }) {
                                     Anterior
                                 </button>
                                 <span>Página {resultado.pagina} de {resultado.totalPaginas}</span>
-                                <button className="btn btn-outline-primary" disabled={resultado.pagina === resultado.totalPaginas}
+                                <button className="btn btn-outline-primary" disabled={resultado.pagina >= resultado.totalPaginas}
                                     onClick={() => iniciarConsulta({ ...consulta, pagina: resultado.pagina + 1 })}>
                                     Siguiente
                                 </button>

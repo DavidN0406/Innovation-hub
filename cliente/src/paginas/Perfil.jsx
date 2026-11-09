@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react"
-import { competenciasDisponibles } from "../datos/usuariosSimulados.js"
+import { useCatalogos } from "../contexto/useCatalogos.js"
+import useOperacion from "../hooks/useOperacion.js"
+import ErrorOperacion from "../componentes/participacion/ErrorOperacion.jsx"
 import { actualizarPerfil, consultarPerfil } from "../servicios/usuarios.js"
 
 function datosDelFormulario(perfil) {
     return {
         nombre: perfil.nombre,
+        primerApellido: perfil.primerApellido, segundoApellido: perfil.segundoApellido ?? "",
+        descripcion: perfil.descripcion ?? "", portafolio: perfil.portafolio ?? "",
         carrera: perfil.carrera,
         disponible: perfil.disponible,
         competencias: [...perfil.competencias],
@@ -13,9 +17,10 @@ function datosDelFormulario(perfil) {
 }
 
 function EditorPerfil({ perfil, onGuardar }) {
+    const { competencias: competenciasDisponibles } = useCatalogos()
+    const operacion = useOperacion()
+    const guardando = operacion.ocupado
     const [formulario, setFormulario] = useState(() => datosDelFormulario(perfil))
-    const [guardando, setGuardando] = useState(false)
-    const [error, setError] = useState("")
     const [mensaje, setMensaje] = useState("")
 
     function cambiarCampo(evento) {
@@ -24,7 +29,7 @@ function EditorPerfil({ perfil, onGuardar }) {
             ...anterior,
             [name]: name === "disponible" ? value === "true" : value
         }))
-        setError("")
+        operacion.limpiarError()
         setMensaje("")
     }
 
@@ -36,36 +41,25 @@ function EditorPerfil({ perfil, onGuardar }) {
                 ? [...anterior.competencias, value]
                 : anterior.competencias.filter((competencia) => competencia !== value)
         }))
-        setError("")
+        operacion.limpiarError()
         setMensaje("")
     }
 
-    async function guardar(evento) {
+    function guardar(evento) {
         evento.preventDefault()
-        if (guardando) return
-        setGuardando(true)
-        setError("")
         setMensaje("")
-
-        try {
-            const actualizado = await actualizarPerfil(perfil.id, {
-                ...formulario,
-                intereses: formulario.intereses.split(",").map((valor) => valor.trim()).filter(Boolean)
-            })
+        const intereses = [...new Set(formulario.intereses.split(",").map(valor => valor.trim()).filter(Boolean))]
+        operacion.ejecutar(signal => actualizarPerfil(perfil.id, { ...formulario, intereses }, { signal }), actualizado => {
             setFormulario(datosDelFormulario(actualizado))
             onGuardar(actualizado)
             setMensaje("Perfil actualizado correctamente.")
-        } catch (error) {
-            setError(error.message)
-        } finally {
-            setGuardando(false)
-        }
+        })
     }
 
     return (
         <form onSubmit={guardar} className="card card-body" aria-busy={guardando}>
             <h2 className="h4 mb-3">Editar perfil</h2>
-            {error && <p className="alert alert-danger" role="alert">{error}</p>}
+            <ErrorOperacion error={operacion.error} />
             {mensaje && <p className="alert alert-success" role="status">{mensaje}</p>}
 
             <fieldset disabled={guardando}>
@@ -73,8 +67,18 @@ function EditorPerfil({ perfil, onGuardar }) {
                 <div className="mb-3">
                     <label htmlFor="nombre-perfil" className="form-label">Nombre</label>
                     <input id="nombre-perfil" name="nombre" className="form-control" required
-                        autoComplete="name" value={formulario.nombre} onChange={cambiarCampo} />
+                        maxLength={100} autoComplete="given-name" value={formulario.nombre} onChange={cambiarCampo} />
                 </div>
+                {[["primerApellido", "Primer apellido", 100], ["segundoApellido", "Segundo apellido", 100],
+                    ["descripcion", "Presentación personal", 1000], ["portafolio", "Portafolio (enlace HTTPS)", 300]].map(([campo, etiqueta, maximo]) => (
+                    <div className="mb-3" key={campo}>
+                        <label htmlFor={`perfil-${campo}`} className="form-label">{etiqueta}</label>
+                        <input id={`perfil-${campo}`} name={campo} className="form-control" maxLength={maximo}
+                            type={campo === "portafolio" ? "url" : "text"} required={campo === "primerApellido"}
+                            pattern={campo === "portafolio" ? "https://.*" : undefined}
+                            value={formulario[campo]} onChange={cambiarCampo} />
+                    </div>
+                ))}
                 <div className="mb-3">
                     <label htmlFor="correo-perfil" className="form-label">Correo electrónico</label>
                     <input id="correo-perfil" className="form-control" type="email"
@@ -83,7 +87,7 @@ function EditorPerfil({ perfil, onGuardar }) {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="carrera-perfil" className="form-label">Carrera</label>
-                    <input id="carrera-perfil" name="carrera" className="form-control" required
+                    <input id="carrera-perfil" name="carrera" className="form-control" maxLength={150} required
                         value={formulario.carrera} onChange={cambiarCampo} />
                 </div>
                 <div className="mb-3">
@@ -131,13 +135,14 @@ function Perfil({ usuarioId, onActualizar }) {
 
     useEffect(() => {
         let activo = true
+        const control = new AbortController()
 
-        consultarPerfil(usuarioId)
+        consultarPerfil(usuarioId, { signal: control.signal })
             .then((datos) => { if (activo) setPerfil(datos) })
             .catch((error) => { if (activo) setError(error.message) })
             .finally(() => { if (activo) setCargando(false) })
 
-        return () => { activo = false }
+        return () => { activo = false; control.abort() }
     }, [usuarioId, intento])
 
     function reintentar() {
@@ -167,7 +172,7 @@ function Perfil({ usuarioId, onActualizar }) {
                         <section className="card card-body mb-4">
                             <h2 className="h4">Información personal</h2>
                             <dl className="mb-0">
-                                <dt>Nombre</dt><dd>{perfil.nombre}</dd>
+                                <dt>Nombre</dt><dd>{[perfil.nombre, perfil.primerApellido, perfil.segundoApellido].filter(Boolean).join(" ")}</dd>
                                 <dt>Correo</dt><dd className="text-break">{perfil.correo}</dd>
                                 <dt>Rol</dt><dd>{perfil.rol}</dd>
                                 <dt>Carrera</dt><dd>{perfil.carrera || "Sin completar"}</dd>

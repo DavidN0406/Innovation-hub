@@ -1,50 +1,20 @@
-import { simularRespuesta } from "./simulacion.js"
-import { consultarPerfil, crearPerfilSimulado } from "./usuarios.js"
+import { solicitar } from "./api.js"
 
-// Cuentas ficticias: se pierden al recargar la página.
-let cuentas = []
-
-async function prepararSimulacion() {
-    if (!import.meta.env.DEV) {
-        throw new Error("La autenticación real todavía no está conectada.")
-    }
-
-    await simularRespuesta(null)
+export function registrarUsuario(datos, { signal } = {}) {
+    return solicitar("auth/register", { method: "POST", body: datos, signal })
 }
-
-export async function registrarUsuario({ nombre, correo, contrasena }) {
-    await prepararSimulacion()
-
-    const correoNormalizado = correo.trim().toLowerCase()
-    const existe = cuentas.some((cuenta) => cuenta.correo === correoNormalizado)
-
-    if (existe) {
-        throw new Error("Ya existe una cuenta con ese correo.")
-    }
-
-    const usuario = {
-        id: crypto.randomUUID(),
-        nombre: nombre.trim(),
-        correo: correoNormalizado
-    }
-
-    const perfil = crearPerfilSimulado(usuario)
-    cuentas = [...cuentas, { ...usuario, contrasena }]
-
-    return perfil
+export function iniciarSesion({ correo, contrasena }, { signal } = {}) {
+    return solicitar("auth/login", { method: "POST", body: { correo, contrasena }, signal })
 }
-
-export async function iniciarSesion({ correo, contrasena }) {
-    await prepararSimulacion()
-
-    const cuenta = cuentas.find((actual) => {
-        return actual.correo === correo.trim().toLowerCase() &&
-            actual.contrasena === contrasena
-    })
-
-    if (!cuenta) {
-        throw new Error("El correo o la contraseña son incorrectos.")
+export async function consultarSesion({ signal } = {}) {
+    try { return await solicitar("auth/me", { signal }) } catch (error) {
+        if (error.estado === 401) return null
+        throw error
     }
-
-    return consultarPerfil(cuenta.id)
+}
+export async function cerrarSesion({ signal } = {}) {
+    try { await solicitar("auth/logout", { method: "POST", signal }) } catch (error) {
+        // Una sesión que ya expiró también queda cerrada en la interfaz.
+        if (error.estado !== 401) throw error
+    }
 }

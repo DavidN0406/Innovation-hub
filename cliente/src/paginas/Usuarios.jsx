@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { competenciasDisponibles } from "../datos/usuariosSimulados.js"
+import { useCatalogos } from "../contexto/useCatalogos.js"
 import { buscarUsuarios } from "../servicios/usuarios.js"
 
 const filtrosIniciales = {
@@ -7,6 +7,7 @@ const filtrosIniciales = {
 }
 
 function Usuarios() {
+    const { competencias: competenciasDisponibles } = useCatalogos()
     const [filtros, setFiltros] = useState({ ...filtrosIniciales })
     const [consulta, setConsulta] = useState({ ...filtrosIniciales, pagina: 1 })
     const [resultado, setResultado] = useState(null)
@@ -15,13 +16,14 @@ function Usuarios() {
 
     useEffect(() => {
         let activo = true
+        const control = new AbortController()
 
-        buscarUsuarios(consulta)
+        buscarUsuarios(consulta, { signal: control.signal })
             .then((datos) => { if (activo) setResultado(datos) })
             .catch((error) => { if (activo) setError(error.message) })
             .finally(() => { if (activo) setCargando(false) })
 
-        return () => { activo = false }
+        return () => { activo = false; control.abort() }
     }, [consulta])
 
     function cambiarFiltro(evento) {
@@ -52,7 +54,6 @@ function Usuarios() {
     return (
         <section className="py-4">
             <h1 className="mb-4">Buscar usuarios</h1>
-            {import.meta.env.DEV && <p className="alert alert-info">Usuarios ficticios para probar la búsqueda.</p>}
 
             <form onSubmit={buscar} className="card card-body mb-4">
                 <div className="row g-3">
@@ -114,11 +115,12 @@ function Usuarios() {
                     <>
                         <p role="status">Resultados: {resultado.total}</p>
                         <div className="row g-3">
+                            {!resultado.usuarios.length && <p>No hay usuarios en esta página. Regrese a la anterior.</p>}
                             {resultado.usuarios.map((usuario) => (
                                 <article className="col-12 col-md-6 col-lg-4" key={usuario.id}>
                                     <div className="card card-body h-100">
                                         <h2 className="h5">{usuario.nombre}</h2>
-                                        <p className="text-break mb-2">{usuario.correo}</p>
+                                        <p className="mb-2">{[usuario.primerApellido, usuario.segundoApellido].filter(Boolean).join(" ")}</p>
                                         <p className="mb-2">{usuario.carrera || "Carrera sin completar"}</p>
                                         <p className="mb-3">{usuario.disponible ? "Disponible" : "No disponible"}</p>
                                         {usuario.competencias.length === 0 ? <p className="mb-0">Sin competencias registradas.</p> : (
@@ -136,7 +138,7 @@ function Usuarios() {
                             <button className="btn btn-outline-primary" disabled={resultado.pagina === 1}
                                 onClick={() => cambiarPagina(resultado.pagina - 1)}>Anterior</button>
                             <span>Página {resultado.pagina} de {resultado.totalPaginas}</span>
-                            <button className="btn btn-outline-primary" disabled={resultado.pagina === resultado.totalPaginas}
+                            <button className="btn btn-outline-primary" disabled={resultado.pagina >= resultado.totalPaginas}
                                 onClick={() => cambiarPagina(resultado.pagina + 1)}>Siguiente</button>
                         </nav>
                     </>

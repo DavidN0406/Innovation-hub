@@ -105,8 +105,10 @@ Proyecto: `{id,iniciativaId,iniciativa,nombre,descripcion,objetivo,fechaInicio,e
 
 GitHub se consume desde React, tal como exige este avance; el servidor solo valida y almacena su URL. Modificacion, archivado, busqueda y filtrado de proyectos corresponden al alcance final.
 
-## Diferencias que debe resolver la integracion del cliente
+## Integracion del cliente (D7)
 
-Se conservan rutas y formatos de participacion G1-G9. Los servicios de autenticacion, perfiles e iniciativas de David todavia son simulados en el estado recibido (`86339f4`); el servidor no los reemplaza silenciosamente. La tarea D7 debe conectarlos a este contrato, ampliar el registro a los campos del documento general, habilitar cuatro visibilidades y estados/categorias controlados, consumir la paginacion uniforme y ejecutar cierre de sesion real. `App.jsx` conserva rutas pendientes de participacion. Compilar React no acredita esa integracion.
+El cliente principal consume este contrato con cookies: autenticacion, perfiles, catalogos, iniciativas y participacion. App.jsx integra las pantallas de solicitudes, equipos y proyectos con rutas privadas; recupera la sesion al recargar y ejecuta logout por HTTP. Registro, visibilidades, categorias, competencias, formularios y paginacion se ajustan a los formatos documentados. La eliminacion maneja tanto 204 como el archivo informado mediante 200.
+
+La entrada de demostracion de Gustavo permanece separada y solo puede simular en desarrollo. Para configurar y comprobar el recorrido contra MongoDB, consulte [integracion-cliente.md](integracion-cliente.md). Las pruebas del cliente con respuestas controladas no sustituyen ese recorrido ni acreditan las pruebas del servidor.
 
 La numeracion RN del PDF del avance 2 difiere del documento general: por ejemplo, conversion aparece como RN-09 en el avance y RN-17 en el general. La implementacion se guia por el texto de cada regla: correo unico, propietario unico y activo, un nivel de visibilidad, edicion y archivo exclusivos del autor, conservacion del historial, sin pendientes ni miembros duplicados, aceptacion atomica y conversion unica con otro miembro. Esta nota evita atribuir una regla al numero equivocado.

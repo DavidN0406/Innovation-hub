@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { Link, useParams } from "react-router"
-import { archivarIniciativa, consultarIniciativa } from "../servicios/iniciativas.js"
+import { Link, useParams, useNavigate } from "react-router"
+import { archivarIniciativa, consultarIniciativa, eliminarIniciativa } from "../servicios/iniciativas.js"
 import useOperacion from "../hooks/useOperacion.js"
 import ErrorOperacion from "../componentes/participacion/ErrorOperacion.jsx"
 
@@ -11,6 +11,7 @@ function formatearFecha(fecha) {
 }
 
 function ContenidoDetalle({ id, usuario }) {
+    const navegar = useNavigate()
     const usuarioId = usuario?.id ?? null
     const [iniciativa, setIniciativa] = useState(null)
     const [cargando, setCargando] = useState(true)
@@ -21,15 +22,16 @@ function ContenidoDetalle({ id, usuario }) {
 
     useEffect(() => {
         let activo = true
+        const control = new AbortController()
 
-        consultarIniciativa(id, usuarioId)
+        consultarIniciativa(id, usuarioId, { signal: control.signal })
             .then((datos) => { if (activo) setIniciativa(datos) })
             .catch((error) => {
                 if (activo) setError({ mensaje: error.message, estado: error.estado })
             })
             .finally(() => { if (activo) setCargando(false) })
 
-        return () => { activo = false }
+        return () => { activo = false; control.abort() }
     }, [id, usuarioId, intento])
 
     function reintentar() {
@@ -41,8 +43,18 @@ function ContenidoDetalle({ id, usuario }) {
     function archivar() {
         if (!window.confirm(`¿Archivar «${iniciativa.titulo}»? Saldrá del catálogo activo y se conservará su información.`)) return
         operacion.ejecutar((signal) => archivarIniciativa(id, usuario, { signal }), () => {
-            setAviso("Iniciativa archivada. Puede consultarla en el catálogo marcando Solo mis iniciativas e Incluir archivadas.")
+            setAviso("Iniciativa archivada. Puede consultarla en el catálogo marcando Solo mis iniciativas y el estado Archivada.")
             reintentar()
+        })
+    }
+
+    function eliminar() {
+        if (!window.confirm(`¿Eliminar «${iniciativa.titulo}»? Si tiene solicitudes, integrantes o un proyecto, se archivará para conservar su historial.`)) return
+        operacion.ejecutar(signal => eliminarIniciativa(id, { signal }), resultado => {
+            if (resultado?.accion === "archivada") {
+                setAviso("La iniciativa tenía información relacionada y se archivó para conservarla.")
+                reintentar()
+            } else navegar("/catalogo", { replace: true })
         })
     }
 
@@ -68,7 +80,7 @@ function ContenidoDetalle({ id, usuario }) {
     }
 
     const { permisos } = iniciativa
-    const visibilidad = { publica: "Pública", restringida: "Restringida" }[iniciativa.visibilidad]
+    const visibilidad = { publica: "Pública", institucional: "Institucional", restringida: "Restringida", privada: "Privada" }[iniciativa.visibilidad]
         || iniciativa.visibilidad
     const ruta = `/iniciativas/${iniciativa.id}`
 
@@ -88,7 +100,7 @@ function ContenidoDetalle({ id, usuario }) {
 
             {!iniciativa.accesoCompleto ? (
                 <p id="avisoRestringida" className="alert alert-warning" role="note">
-                    <strong>Contenido restringido.</strong> Solo está disponible el resumen de esta iniciativa.
+                    <strong>Contenido restringido.</strong> Solo está disponible el resumen de esta iniciativa. Competencias requeridas: {iniciativa.competencias.join(", ")}.
                 </p>
             ) : (
                 <div className="row g-4">
@@ -175,7 +187,10 @@ function ContenidoDetalle({ id, usuario }) {
                         {operacion.ocupado ? "Archivando…" : "Archivar iniciativa"}
                     </button>
                 )}
-                {permisos.puedeVerEquipo && (
+                {permisos.puedeArchivar && <button type="button" className="btn btn-outline-danger" onClick={eliminar} disabled={operacion.ocupado}>
+                    Eliminar iniciativa
+                </button>}
+                {usuario && permisos.puedeVerEquipo && (
                     <Link to={`${ruta}/equipo`} className="btn btn-outline-primary">Ver equipo</Link>
                 )}
                 {permisos.puedeConvertir && (

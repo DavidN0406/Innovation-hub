@@ -1,11 +1,11 @@
 import { validarRespuesta } from './respuestas.js'
 
 const entorno = import.meta.env ?? {}
-export const modoSimulado = entorno.DEV === true && entorno.VITE_PARTICIPACION_MOCK === 'true'
+export const modoSimulado = entorno.DEV === true && entorno.VISTA_GUSTAVO === true && entorno.VITE_PARTICIPACION_MOCK === 'true'
 
 export function crearTransporte({ entorno, fetchImpl = fetch }) {
 return async function peticion(ruta, { method = 'GET', body, usuario, signal } = {}) {
-  if (entorno.DEV === true && entorno.VITE_PARTICIPACION_MOCK === 'true') {
+  if (entorno.DEV === true && entorno.VISTA_GUSTAVO === true && entorno.VITE_PARTICIPACION_MOCK === 'true') {
     const { simularParticipacion } = await import('./simulador.js')
     await new Promise(resolve => setTimeout(resolve, 150))
     signal?.throwIfAborted()

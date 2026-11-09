@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import { Link } from 'react-router'
+import { useCatalogos } from '../contexto/useCatalogos.js'
 import { listarSolicitudes, cambiarEstadoSolicitud } from '../servicios/solicitudes.js'
 import { estadosSolicitud } from '../servicios/participacion/validacion.js'
 import useConsulta from '../hooks/useConsulta.js'
@@ -10,12 +11,15 @@ import ErrorOperacion from '../componentes/participacion/ErrorOperacion.jsx'
 import SelectorIniciativa from '../componentes/participacion/SelectorIniciativa.jsx'
 
 export default function SolicitudesRecibidas({ usuario }) {
+  const { competencias } = useCatalogos()
+  const [filtros, setFiltros] = useState({ skill: '', role: '', date: '' })
+  const [borrador, setBorrador] = useState({ skill: '', role: '', date: '' })
   const [estado, setEstado] = useState('')
   const [iniciativaId, setIniciativaId] = useState('')
   const [pagina, setPagina] = useState(1)
   const [aviso, setAviso] = useState('')
   const operacion = useOperacion()
-  const cargar = useCallback(signal => listarSolicitudes({ scope: 'received', status: estado, initiativeId: iniciativaId, page: pagina, size: 5 }, { usuario, signal }), [usuario, estado, iniciativaId, pagina])
+  const cargar = useCallback(signal => listarSolicitudes({ ...filtros, scope: 'received', status: estado, initiativeId: iniciativaId, page: pagina, size: 5 }, { usuario, signal }), [usuario, estado, iniciativaId, pagina, filtros])
   const consulta = useConsulta(cargar)
   function resolver(s, nuevoEstado) {
     if (!window.confirm(`¿Marcar la solicitud de ${s.solicitanteNombre} como ${nuevoEstado}?`)) return
@@ -33,6 +37,17 @@ export default function SolicitudesRecibidas({ usuario }) {
       <select id="estado-recibidas" className="form-select" value={estado} onChange={e => { setEstado(e.target.value); setPagina(1) }}>
         <option value="">Todos los estados</option>{estadosSolicitud.map(e => <option key={e} value={e}>{e}</option>)}
       </select>
+      <form className="row g-2 mt-2" onSubmit={e => { e.preventDefault(); setFiltros({ ...borrador }); setPagina(1) }}>
+        <div className="col-md-4"><label htmlFor="recibidas-skill" className="form-label">Competencia</label>
+          <select id="recibidas-skill" className="form-select" value={borrador.skill} onChange={e => setBorrador(a => ({ ...a, skill: e.target.value }))}>
+            <option value="">Todas</option>{competencias.map(c => <option key={c}>{c}</option>)}
+          </select></div>
+        <div className="col-md-4"><label htmlFor="recibidas-role" className="form-label">Rol solicitado</label>
+          <input id="recibidas-role" className="form-control" maxLength={100} value={borrador.role} onChange={e => setBorrador(a => ({ ...a, role: e.target.value }))} /></div>
+        <div className="col-md-4"><label htmlFor="recibidas-date" className="form-label">Fecha de solicitud</label>
+          <input id="recibidas-date" type="date" className="form-control" value={borrador.date} onChange={e => setBorrador(a => ({ ...a, date: e.target.value }))} /></div>
+        <div><button className="btn btn-outline-primary" type="submit">Aplicar filtros adicionales</button></div>
+      </form>
     </fieldset>
     {aviso && <p className="alert alert-success" role="status">{aviso}</p>}
     <ErrorOperacion error={operacion.error} />
@@ -42,6 +57,7 @@ export default function SolicitudesRecibidas({ usuario }) {
         <h2 className="h5">{s.solicitanteNombre} · {s.iniciativa.titulo}</h2>
         <p><span className="badge text-bg-secondary">{s.estado}</span></p>
         <p style={{ whiteSpace: 'pre-wrap' }}>{s.mensaje}</p>
+        <p>Rol solicitado: {s.rolSolicitado || "Colaborador"}</p>
         <p>Competencias: {s.competencias.join(', ')}</p><p>Disponibilidad: {s.disponibilidad}</p>
         <div className="d-flex flex-wrap gap-2 align-items-center">
           {s.estado === 'pendiente' && <><button className="btn btn-primary" disabled={operacion.ocupado} onClick={() => resolver(s, 'aceptada')}>Aceptar</button>

@@ -1,13 +1,15 @@
-import { categoriasIniciativa, competenciasCatalogo, tiposIniciativa } from "../datos/iniciativasSimuladas.js"
+import { tiposIniciativa } from "./catalogos.js"
 
 // Se conservan los campos y límites utilizados en el formulario del avance 1.
-// Los cuatro niveles definitivos se acordarán en el contrato general de la API.
+// Niveles definidos en docs/api-contract.md.
 export const visibilidadesIniciativa = [
     { valor: "publica", texto: "Pública" },
-    { valor: "restringida", texto: "Restringida" }
+    { valor: "institucional", texto: "Institucional" },
+    { valor: "restringida", texto: "Restringida" },
+    { valor: "privada", texto: "Privada" }
 ]
 
-export function validarIniciativa(datos = {}) {
+export function validarIniciativa(datos = {}, { categorias = [], competencias = [] } = {}) {
     datos = datos ?? {}
     const errores = {}
     const limites = [
@@ -20,15 +22,15 @@ export function validarIniciativa(datos = {}) {
         }
     }
     if (!tiposIniciativa.includes(datos.tipo)) errores.tipo = "Seleccione un tipo válido."
-    if (!categoriasIniciativa.includes(datos.categoria)) errores.categoria = "Seleccione una categoría válida."
+    if (!categorias.includes(datos.categoria)) errores.categoria = "Seleccione una categoría válida."
     if (!visibilidadesIniciativa.some((opcion) => opcion.valor === datos.visibilidad)) {
         errores.visibilidad = "Seleccione un nivel de visibilidad."
     }
     if (!Number.isInteger(datos.participantesEstimados) || datos.participantesEstimados < 1 || datos.participantesEstimados > 50) {
         errores.participantesEstimados = "Indique un número entero entre 1 y 50."
     }
-    if (!Array.isArray(datos.competencias) || datos.competencias.length === 0 ||
-        !datos.competencias.every((competencia) => competenciasCatalogo.includes(competencia))) {
+    if (!Array.isArray(datos.competencias) || datos.competencias.length === 0 || datos.competencias.length > 30 ||
+        !datos.competencias.every((competencia) => competencias.includes(competencia))) {
         errores.competencias = "Seleccione al menos una competencia de la lista."
     }
     if (!Array.isArray(datos.etiquetas) || datos.etiquetas.length > 5 ||

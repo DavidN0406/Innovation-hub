@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router"
-import { categoriasIniciativa, competenciasCatalogo, tiposIniciativa } from "../../datos/iniciativasSimuladas.js"
+import { tiposIniciativa } from "../../servicios/catalogos.js"
+import { useCatalogos } from "../../contexto/useCatalogos.js"
 import { validarIniciativa, visibilidadesIniciativa } from "../../servicios/validacionIniciativa.js"
 import useOperacion from "../../hooks/useOperacion.js"
 import ErrorOperacion from "../participacion/ErrorOperacion.jsx"
@@ -18,6 +19,7 @@ function valoresIniciales(iniciativa) {
 }
 
 function FormularioIniciativa({ inicial, guardar, onGuardado, rutaCancelar }) {
+    const { categorias: categoriasIniciativa, competencias: competenciasCatalogo } = useCatalogos()
     const [datos, setDatos] = useState(() => valoresIniciales(inicial))
     const [errores, setErrores] = useState({})
     const operacion = useOperacion()
@@ -73,7 +75,7 @@ function FormularioIniciativa({ inicial, guardar, onGuardado, rutaCancelar }) {
             participantesEstimados: Number(datos.participantesEstimados),
             etiquetas: datos.etiquetas.split(",").map((etiqueta) => etiqueta.trim()).filter(Boolean)
         }
-        const problemas = validarIniciativa(payload)
+        const problemas = validarIniciativa(payload, { categorias: categoriasIniciativa, competencias: competenciasCatalogo })
         setErrores(problemas)
         if (Object.keys(problemas).length) {
             evento.currentTarget.querySelector(`[name="${Object.keys(problemas)[0]}"]`)?.focus()

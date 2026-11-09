@@ -16,83 +16,58 @@ Proyecto del curso SOFT-12 Programación web avanzada, Universidad CENFOTEC.
 
 Innovation Hub es una aplicación web donde la comunidad universitaria publica ideas, necesidades y retos, declara las competencias que cada iniciativa requiere y forma equipos interdisciplinarios.
 
-## Estado del Avance 2 y trabajo de Gustavo
+## Estado del Avance 2
 
-El cliente React incluye catálogo, detalle y perfiles de desarrollo. La rama de Gustavo incorpora solicitudes, equipo, conversión, proyectos y GitHub en una entrada independiente, como se acordó para evitar cambios en `App.jsx`. El servidor de Jorge incorpora API Express, persistencia MongoDB, autenticación y permisos reales en los commits J1-J10. La integración de esos servicios con las pantallas simuladas del cliente continúa pendiente en D7; la demostración aislada no sustituye ese recorrido integrado. La [revisión detallada](docs/revision-avance2.md) enumera lo comprobado y lo pendiente para la entrega completa.
+El cliente React se conecta a la API Express y MongoDB. Incluye registro, sesión recuperable al recargar, cierre de sesión real, perfiles, búsqueda de usuarios, iniciativas, solicitudes, equipos, conversión, proyectos y consulta pública de GitHub. Las operaciones de la aplicación principal usan la sesión del servidor.
 
-### Instalar y ejecutar el cliente
+La [guía de integración y prueba](docs/integracion-cliente.md) contiene los pasos de arranque, variables, semillas, recorrido con dos cuentas y comprobaciones previas a la entrega. El recorrido completo en navegador debe verificarse en el equipo con MongoDB disponible; una compilación correcta no lo sustituye.
 
-Usar Node.js compatible con Vite y el archivo de bloqueo; cierre verificado con Node 24.19.0 y npm 11.17.0. Desde la raíz:
+### Ejecución
 
-```powershell
-cd cliente
-npm ci
-Copy-Item .env.example .env.local
-npm run dev
-```
-
-En macOS/Linux, usar `cp .env.example .env.local`. La aplicación principal se abre en la dirección que indique Vite. Los servicios existentes de perfiles, acceso e iniciativas son simulados y solo operan en desarrollo.
-
-### Probar las pantallas de Gustavo
-
-Desde `cliente/`, con una copia de las variables de ejemplo específicas (si ya existe `.env.local`, conservar su configuración y ajustar los valores indicados):
+Use Node compatible (cliente: mínimo 22.22.0; preparación comprobada con 24.22.1). Prepare MongoDB como replica set siguiendo [servidor/README.md](servidor/README.md), configure su `.env` y cargue catálogos sobre una base nueva de demostración. Mantenga dos terminales abiertas:
 
 ```powershell
-Copy-Item .env.gustavo.example .env.local
-npm run dev:gustavo
-```
-
-Abrir `/gustavo.html` en la dirección de Vite. Seleccionar el actor en “Probar como”. Ese selector solo cambia identidades ficticias; no inicia una sesión real. Datos en memoria, reiniciados al recargar. La guía incluye [datos y recorrido de demostración](docs/integracion-gustavo.md).
-
-| Variable del cliente | Valor/uso |
-| --- | --- |
-| VITE_API_URL | Base HTTP del servidor, incluyendo `/api`; ejemplo local `http://localhost:3000/api`. |
-| VITE_PARTICIPACION_MOCK | `true` para probar participación en desarrollo; `false` para consultar la API real. Nunca activa mocks en producción. |
-| VITE_GITHUB_API_URL | `https://api.github.com`, API pública consultada directamente por React. |
-
-Reiniciar Vite después de cambiar variables. Las variables `VITE_*` son públicas: no colocar claves ni cookies en ellas. `.env.local` y dependencias están excluidas de Git.
-
-### Comprobar el cliente
-
-```powershell
-npm test
-npm run lint
-npm run build
-npm run build:gustavo
-```
-
-Las compilaciones generan `dist/` y `dist-gustavo/`, fuera de Git. Compilar no acredita funcionamiento contra el servidor. La entrada independiente está orientada al desarrollo: para operar con API real hay que incorporar los componentes a la sesión de la aplicación principal siguiendo la [guía de integración](docs/integracion-gustavo.md).
-
-### Servidor, MongoDB y cierre de entrega
-
-El servidor ya está implementado en `servidor/`. Requiere Node.js 22 o superior y MongoDB con replica set para confirmar aceptación/equipo y conversión/proyecto de forma atómica. La [guía de ejecución del servidor](servidor/README.md) explica instalación, variables privadas, MongoDB, semillas y Postman.
-
-Desde la raíz, después de preparar MongoDB:
-
-```powershell
+# Terminal 1, desde la raíz:
 cd servidor
 npm ci
-Copy-Item .env.example .env
-# Configurar MONGODB_URI, CLIENT_ORIGIN y un SESSION_SECRET propio en .env.
 npm run dev
 ```
 
-Para datos reproducibles usar una base terminada en `_demo`, configurar `SEED_PASSWORD` y ejecutar `npm run seed -- --confirmar-demo`. Las pruebas automáticas usan otra instancia MongoDB temporal y no modifican esa base. Ejecutar `npm run lint` y `npm test` desde `servidor/`.
+```powershell
+# Terminal 2, desde la raíz:
+cd cliente
+npm ci
+npm run dev -- --port 5173 --strictPort
+```
 
-Documentación de esta parte:
+En `cliente/.env.local`:
 
-- [Contrato completo de la API](docs/api-contract.md): rutas, campos, códigos, permisos, filtros, estados y diferencias de integración.
-- [Modelo de datos y decisiones de persistencia](docs/modelo-datos.md).
-- [Guía explicada de los commits J1-J10 y del recorrido de cada petición](docs/guia-servidor-j.md).
-- [Revisión y resultados de las pruebas del servidor](docs/revision-servidor-j.md).
-- [Colección original de participación, 38 casos](pruebas/participacion.postman_collection.json), conservada sin cambios, y [colección adicional del servidor, 27 casos](pruebas/servidor.postman_collection.json). Ambas ejecutadas contra HTTP/MongoDB reales dentro de las pruebas automáticas; las claves y cookies se inyectan en memoria.
-- [Propuesta histórica de participación](docs/api-participacion-propuesta.md), [guía de integración de Gustavo](docs/integracion-gustavo.md) y [revisión histórica del 7 de noviembre](docs/revision-avance2.md).
+```dotenv
+VITE_API_URL=http://localhost:3000/api
+VITE_PARTICIPACION_MOCK=false
+VITE_GITHUB_API_URL=https://api.github.com
+```
 
-El código de `cliente/` y `avance1/` se conserva. En el estado recibido, los servicios de autenticación, perfiles e iniciativas usan simulación y `App.jsx` mantiene rutas de participación pendientes. D7 debe conectar esos servicios al contrato y a la sesión real, ampliar los formularios a las reglas documentadas e integrar navegación. Cambiar solamente `VITE_PARTICIPACION_MOCK=false` no completa ese trabajo.
+El servidor debe permitir `CLIENT_ORIGIN=http://localhost:5173`. Abra `http://localhost:5173`, con `localhost` también en la URL de la API. Reinicie Vite al cambiar variables. Las variables VITE son públicas y nunca deben contener secretos.
 
-El cierre comprobó 17 escenarios automáticos de servidor, las 65 peticiones de Postman, los 19 tests existentes del cliente, su análisis estático y ambas compilaciones. El cliente se verificó con Node 24.22.1; react-router exige Node >=22.22.0, por encima del Node 22.17.0 instalado por defecto en este equipo. Persisten avisos previos de deprecación de Sass, sin errores de compilación.
+### Comprobaciones
 
-Antes de crear `entrega-2`, el equipo debe completar y probar el recorrido React-servidor-MongoDB desde las pantallas. Estos commits mantienen sus fechas reales y no crean una etiqueta de entrega sobre una integración pendiente.
+Desde `cliente/`: `npm test`, `npm run lint`, `npm run build` y `npm run build:gustavo`. Esta integración pasó 22 pruebas del cliente y ambas compilaciones. Las pruebas nuevas comprueban peticiones y respuestas controladas; no sustituyen la verificación del servidor. Se mantienen los avisos existentes de Sass/Bootstrap.
+
+Desde `servidor/`: `npm run lint` y `npm test`. Su suite usa MongoDB temporal. En el entorno de preparación de D7 no pudo arrancar ese proceso por un permiso del entorno; los resultados anteriores de Jorge constan en su informe histórico. Antes de etiquetar `entrega-2`, repetir el recorrido de la guía con servidor y base de datos reales.
+
+### Documentación y demostración aislada
+
+- [Contrato HTTP/JSON](docs/api-contract.md) y [modelo de datos](docs/modelo-datos.md).
+- [Arranque de MongoDB, API y semillas](servidor/README.md).
+- [Guía actual de integración y recorrido](docs/integracion-cliente.md).
+- [Guía del servidor](docs/guia-servidor-j.md) e [informe histórico de Jorge](docs/revision-servidor-j.md).
+- Colecciones de Postman: [participación](pruebas/participacion.postman_collection.json) y [servidor](pruebas/servidor.postman_collection.json).
+- [Guía histórica de Gustavo](docs/integracion-gustavo.md) y [revisión anterior a D7](docs/revision-avance2.md).
+
+Las referencias a «D7 pendiente» en documentos anteriores describen el estado previo a esta integración. La guía actual reemplaza esas instrucciones de conexión del cliente.
+
+La entrada separada `npm run dev:gustavo` conserva la demostración de desarrollo con `VITE_PARTICIPACION_MOCK=true`. El selector de identidades solo es simulado. Esa variable no activa simulación en la aplicación principal, y producción siempre consulta la API real. Las compilaciones y dependencias permanecen fuera de Git.
 
 ## Prototipo del Avance 1
 
@@ -210,6 +185,18 @@ La tabla siguiente conserva el resumen histórico del repositorio. Para consulta
 | 50 | 2026-11-07 | 133687c | Mostrar informacion de repositorios desde GitHub |
 | 51 | 2026-11-07 | 65bed79 | Crear coleccion de pruebas de la API |
 | 52 | 2026-11-07 | e49b8d7 | Completar README y documentacion de entrega |
+| 53 | 2026-11-08 | 86339f4 | Implementar creacion edicion y archivado de iniciativas |
+| 54 | 2026-11-08 | 3fc9334 | Crear estructura del servidor y documentar contrato |
+| 55 | 2026-11-08 | d1f6345 | Configurar MongoDB y modelos del sistema |
+| 56 | 2026-11-08 | 0ee7af2 | Implementar registro y autenticacion segura |
+| 57 | 2026-11-08 | 1c15ac9 | Implementar perfiles competencias y consultas de usuarios |
+| 58 | 2026-11-08 | bbfdaf4 | Implementar gestion completa de iniciativas |
+| 59 | 2026-11-08 | 6f356a5 | Implementar solicitudes del participante |
+| 60 | 2026-11-08 | 749e3f5 | Implementar solicitudes recibidas y equipos |
+| 61 | 2026-11-08 | 2c66caa | Implementar conversion y consulta de proyectos |
+| 62 | 2026-11-08 | 08a03bf | Agregar carga de datos de prueba |
+| 63 | 2026-11-08 | 9fa19f6 | Completar validaciones y documentacion del servidor |
+| 64 | 2026-11-08 | ffc9d02 | Rename to Estructura del avance 2 |
 
 <!-- FIN TABLA COMMITS -->
 
