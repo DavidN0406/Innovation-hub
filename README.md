@@ -197,6 +197,7 @@ La tabla siguiente conserva el resumen histórico del repositorio. Para consulta
 | 62 | 2026-11-08 | 08a03bf | Agregar carga de datos de prueba |
 | 63 | 2026-11-08 | 9fa19f6 | Completar validaciones y documentacion del servidor |
 | 64 | 2026-11-08 | ffc9d02 | Rename to Estructura del avance 2 |
+| 65 | 2026-11-08 | 84d65a5 | Integrar el cliente con la API real |
 
 <!-- FIN TABLA COMMITS -->
 
