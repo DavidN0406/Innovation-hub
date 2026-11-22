@@ -8,7 +8,7 @@ Entity Framework Core permite obtener información relacionada de diferentes for
 
 `Include` se utiliza para cargar una entidad junto con sus relaciones. Es útil cuando se necesita trabajar con los objetos relacionados completos mediante las propiedades de navegación.
 
-Tomando como ejemplo una ruta de lectura del diseño de Innovation Hub, como el detalle de una iniciativa (`GET /api/iniciativas/{id}`), la consulta podría necesitar la iniciativa junto con sus competencias y los usuarios que forman parte del equipo.
+Tomando como ejemplo una ruta de lectura del diseño de Innovation Hub, como el detalle de una iniciativa (`GET /api/iniciatives/{id}`), la consulta podría necesitar la iniciativa junto con sus competencias y los usuarios que forman parte del equipo.
 
 Ejemplo:
 
@@ -33,7 +33,7 @@ var iniciativas = await context.Iniciativas
     .Select(i => new
     {
         i.Id,
-        i.Nombre,
+        i.Titulo,
         CantidadMiembros = i.Equipo.Count
     })
     .ToListAsync();
@@ -70,7 +70,7 @@ Una relación muchos a muchos puede resolverse con una tabla intermedia simple c
 Por ejemplo:
 
 ```
-UsuarioCompetencia
+UsuarioCompetencias
 
 UsuarioId
 CompetenciaId

@@ -121,6 +121,13 @@ Nota: como los datos se cargan con `fetch` desde archivos JSON, algunos navegado
 - El código de JavaScript está dividido en módulos con responsabilidades separadas.
 - Se diseñó pensando en el Avance 2, donde estas mismas pantallas se reescriben como componentes de React.
 
+## Diseño de la base de datos (Tarea 3)
+- [Modelo de datos en SQL Server](docs/modelo-datos.md)
+- [Consultas SQL](docs/consultas.sql)
+- [Diseño de rutas de lectura](docs/rutas.md)
+- [Investigación de EF Core](docs/investigacion-efcore.md)
+
+
 ## Trabajo en equipo y commits
 
 El trabajo se repartió por archivos para evitar conflictos: cada integrante fue dueño de sus páginas, módulos de JavaScript y parciales de Sass.
@@ -198,6 +205,7 @@ La tabla siguiente conserva el resumen histórico del repositorio. Para consulta
 | 63 | 2026-11-08 | 9fa19f6 | Completar validaciones y documentacion del servidor |
 | 64 | 2026-11-08 | ffc9d02 | Rename to Estructura del avance 2 |
 | 65 | 2026-11-08 | 84d65a5 | Integrar el cliente con la API real |
+| 66 | 2026-11-19 | 94f17df | Se agregó la investigacion efcore de tarea 3 |
 
 <!-- FIN TABLA COMMITS -->
 
