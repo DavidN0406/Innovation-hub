@@ -4,7 +4,7 @@ Este documento pasa el modelo de MongoDB del Avance 2 a tablas de SQL Server. Es
 
 Decisiones generales:
 
-- Cada tabla tiene un `Id INT IDENTITY`. En el JSON los identificadores siguen saliendo como texto, porque el contrato dice que son opacos.
+- Las tablas principales e hijas tienen un `Id INT IDENTITY`; las tablas de unión sin identidad usan las claves compuestas indicadas en su descripción. En el JSON los identificadores siguen saliendo como texto, porque el contrato dice que son opacos.
 - Las competencias y las categorías ya no usan el nombre como identificador. Tienen Id propio y el nombre queda UNIQUE.
 - Todo arreglo del Avance 2 pasa a una tabla hija o a una tabla intermedia. Las listas de valores permitidos pasan a restricciones CHECK.
 - Las reglas que dependen de contar filas de otra tabla (el cupo de un equipo, por ejemplo) las sigue validando el servidor dentro de una transacción.
@@ -55,6 +55,7 @@ erDiagram
     UsuarioCompetencias {
         int UsuarioId PK, FK
         int CompetenciaId PK, FK
+        int Orden
     }
     Iniciativas {
         int Id PK
@@ -68,6 +69,7 @@ erDiagram
     IniciativaCompetencias {
         int IniciativaId PK, FK
         int CompetenciaId PK, FK
+        int Orden
     }
     IniciativaEtiquetas {
         int Id PK
@@ -119,7 +121,7 @@ erDiagram
 - **iniciativa–competencia:** muchos a muchos. Una iniciativa requiere varias competencias y una competencia se requiere en varias iniciativas. Se resuelve con la tabla intermedia `IniciativaCompetencias` (IniciativaId, CompetenciaId).
 - **iniciativa–solicitud:** 1 a muchos. Una iniciativa recibe muchas solicitudes y cada solicitud es para una sola iniciativa. Se resuelve con la llave foránea `Solicitudes.IniciativaId → Iniciativas`. La solicitud también apunta a quien la envía con `Solicitudes.SolicitanteId → Usuarios` (otro 1 a muchos).
 - **proyecto–usuario:** muchos a muchos. Un proyecto lo trabajan varias personas y una persona puede estar en varios proyectos. No lleva tabla propia porque en el Avance 2 el proyecto no copia a sus miembros: los integrantes son el equipo de su iniciativa. Se resuelve con la tabla intermedia que ya existe, `EquipoIniciativa`, pasando por `Proyectos.IniciativaId` (Proyectos → Iniciativas → EquipoIniciativa → Usuarios). Así el acceso nunca queda desactualizado.
-- **proyecto–iniciativa:** 1 a muchos en las tablas, limitado a 1 a 1. Se resuelve con la llave foránea `Proyectos.IniciativaId → Iniciativas` con restricción UNIQUE, porque una iniciativa se convierte como máximo en un proyecto.
+- **proyecto–iniciativa:** uno a uno opcional desde la iniciativa (una iniciativa tiene cero o un proyecto; cada proyecto tiene exactamente una iniciativa). Se resuelve con la llave foránea `Proyectos.IniciativaId → Iniciativas` con restricción UNIQUE, porque una iniciativa se convierte como máximo en un proyecto.
 
 ### Del documento a la tabla
 
@@ -187,6 +189,8 @@ Catálogo de competencias. En MongoDB el _id era el nombre, ahora tiene Id propi
 | Id | INT IDENTITY | Sí | Primaria |  |
 | Nombre | NVARCHAR(100) | Sí |  | UNIQUE (el nombre sigue siendo el vocabulario controlado) |
 | Categoria | NVARCHAR(100) | No |  |  |
+| FechaCreacion | DATETIME2 | Sí | | Se copia del documento en UTC |
+| FechaModificacion | DATETIME2 | Sí | | Se copia del documento en UTC |
 
 ### Categorias
 
@@ -196,6 +200,9 @@ Catálogo de categorías de iniciativa. Igual que Competencias, con Id propio y 
 | --- | --- | --- | --- | --- |
 | Id | INT IDENTITY | Sí | Primaria |  |
 | Nombre | NVARCHAR(100) | Sí |  | UNIQUE |
+| Categoria | NVARCHAR(100) | No |  | Campo opcional del esquema de catálogo compartido; se conserva si existe |
+| FechaCreacion | DATETIME2 | Sí | | Se copia del documento en UTC |
+| FechaModificacion | DATETIME2 | Sí | | Se copia del documento en UTC |
 
 ### UsuarioIntereses
 
@@ -219,6 +226,7 @@ Tabla intermedia usuario-competencia (muchos a muchos). Reemplaza el arreglo de 
 | --- | --- | --- | --- | --- |
 | UsuarioId | INT | Sí | Primaria y foránea → Usuarios | Al borrar el usuario se borran también sus filas (CASCADE) |
 | CompetenciaId | INT | Sí | Primaria y foránea → Competencias | Se impide borrar una competencia que algún usuario tiene |
+| Orden | INT | Sí | | CHECK >= 1; UNIQUE (UsuarioId, Orden); conserva la posición en el arreglo |
 
 Restricciones e índices de la tabla:
 
@@ -259,6 +267,7 @@ Tabla intermedia iniciativa-competencia (muchos a muchos). Reemplaza el arreglo 
 | --- | --- | --- | --- | --- |
 | IniciativaId | INT | Sí | Primaria y foránea → Iniciativas | Al borrar la iniciativa se borran también sus filas (CASCADE) |
 | CompetenciaId | INT | Sí | Primaria y foránea → Competencias | Se impide borrar una competencia que alguna iniciativa requiere |
+| Orden | INT | Sí | | CHECK >= 1; UNIQUE (IniciativaId, Orden); conserva la posición en el arreglo |
 
 Restricciones e índices de la tabla:
 
@@ -284,7 +293,7 @@ Tabla intermedia usuario-iniciativa con datos propios (rol y fecha). Reemplaza e
 
 | Columna | Tipo | ¿Obligatoria? | Llave | Regla |
 | --- | --- | --- | --- | --- |
-| Id | INT IDENTITY | Sí | Primaria | Id propio porque la relación tiene datos propios (entidad intermedia en EF Core) |
+| Id | INT IDENTITY | Sí | Primaria | Identificador elegido para esta fila. Los datos propios requieren entidad intermedia en EF Core, pero también podría utilizar una PK compuesta |
 | IniciativaId | INT | Sí | Foránea → Iniciativas | Al borrar la iniciativa se borra también su equipo (CASCADE). Así se puede eliminar una iniciativa que solo tiene al propietario |
 | UsuarioId | INT | Sí | Foránea → Usuarios | Se impide borrar un usuario que está en un equipo |
 | Rol | NVARCHAR(100) | Sí |  |  |
@@ -388,11 +397,11 @@ Estas son las colecciones del Avance 2 con sus campos. Un arreglo embebido es un
 | --- | --- | --- | --- |
 | usuarios | _id, nombre, primerApellido, segundoApellido, correo, hash, tipoMiembro, carrera, descripcion, disponible, competencias, intereses, portafolio, activo, aceptaTerminos, fechaCreacion, fechaModificacion | intereses (textos) | competencias[] → competencias |
 | competencias | _id (igual al nombre), nombre, categoria, fechaCreacion, fechaModificacion | ninguno | ninguna |
-| categorias | _id (igual al nombre), nombre, fechaCreacion, fechaModificacion | ninguno | ninguna |
+| categorias | _id (igual al nombre), nombre, categoria (opcional), fechaCreacion, fechaModificacion | ninguno | ninguna |
 | iniciativas | _id, titulo, tipo, resumen, descripcion, problema, beneficiarios, categoria, competencias, etiquetas, participantesEstimados, visibilidad, estado, propietarioId, equipo, retiros, revision, fechaCreacion, fechaModificacion | etiquetas (textos), equipo (usuarioId, rol, fechaIncorporacion), retiros (usuarioId, fechaRetiro, motivo) | categoria → categorias, competencias[] → competencias, propietarioId → usuarios, equipo[].usuarioId → usuarios, retiros[].usuarioId → usuarios |
 | solicitudes | _id, iniciativaId, solicitanteId, mensaje, competencias, disponibilidad, rolSolicitado, estado, fechaDecision, respuesta, fechaCreacion, fechaModificacion | competencias (textos con el nombre de una competencia) | iniciativaId → iniciativas, solicitanteId → usuarios, competencias[] (por nombre) → competencias |
 | proyectos | _id, iniciativaId, nombre, descripcion, objetivo, fechaInicio, estado, repositorio, tecnologias, fechaFinEstimada, fechaCreacion, fechaModificacion | tecnologias (textos) | iniciativaId → iniciativas |
-| sesiones | _id (id de sesión firmado), usuarioId, fecha de expiración | ninguno | usuarioId → usuarios (solo lógica, es un almacén técnico) |
+| sesiones | _id (identificador de sesión), session (JSON serializado), expires (fecha de expiración) | ninguno | session.usuarioId → usuarios (referencia lógica dentro de la sesión; la cookie, no el _id de MongoDB, se firma) |
 
 ### Paso 2. Correspondencia
 
@@ -420,7 +429,8 @@ CREATE TABLE MigracionEquivalencias (
     Coleccion NVARCHAR(30)  NOT NULL,
     IdMongo   NVARCHAR(100) NOT NULL,
     IdSql     INT           NOT NULL,
-    CONSTRAINT PK_MigracionEquivalencias PRIMARY KEY (Coleccion, IdMongo)
+    CONSTRAINT PK_MigracionEquivalencias PRIMARY KEY (Coleccion, IdMongo),
+    CONSTRAINT UQ_MigracionEquivalencias_Destino UNIQUE (Coleccion, IdSql)
 );
 ```
 
@@ -430,7 +440,7 @@ Los pasos son estos:
 2. Un script de migración recorre las colecciones en el orden del paso 3. Por cada documento hace el INSERT sin dar el Id (lo genera IDENTITY), recupera el Id nuevo con `OUTPUT INSERTED.Id` y guarda la pareja en la tabla de equivalencias.
 3. Cuando un documento tiene una referencia (`propietarioId`, `categoria`, `usuarioId` del equipo, `iniciativaId` de una solicitud), el script busca el `_id` viejo en la tabla de equivalencias y escribe el Id nuevo en la llave foránea. Como las tablas se llenan en el orden del paso 3, el Id del padre ya existe cuando se necesita.
 4. Los arreglos de nombres de competencias (en usuarios, iniciativas y solicitudes) se convierten buscando cada nombre en la equivalencia de `competencias`. En los arreglos con orden, como el de solicitudes, el orden del arreglo se guarda en la columna `Orden`.
-5. La tabla se conserva hasta terminar el paso 6 y después se borra o se archiva.
+5. Se conserva la equivalencia en un archivo de auditoría protegido después de validar la migración. Durante la carga se impone además UNIQUE (Coleccion, IdSql), se rechazan referencias sin correspondencia y nunca se omiten silenciosamente. La tabla es temporal de migración, no una entidad del dominio del diagrama.
 
 Ejemplo de cómo se ven algunas equivalencias:
 
@@ -461,7 +471,7 @@ JOIN MigracionEquivalencias AS eu
 WHERE ei.Coleccion = 'iniciativas' AND ei.IdMongo = @IniciativaIdMongo;
 ```
 
-El cliente de React no se entera del cambio porque los identificadores siguen siendo texto opaco, solo que ahora llegan como `"1"` en lugar de un UUID.
+El formato sigue siendo texto opaco. Cambian los valores de todos los identificadores y, por tanto, las direcciones antiguas o favoritos que contengan UUID necesitan traducción con la equivalencia o una nueva consulta al catálogo. El cliente no debe convertirlos a número ni depender de la forma UUID.
 
 ### Paso 5. Carga de datos
 
@@ -476,7 +486,7 @@ Los datos se escriben en el mismo orden del paso 3. Los valores `(vacío)` son t
 | 3 | Marta | Chaves | Quesada | marta.chaves@example.test | scrypt:c3… | docente | Ingeniería de Software | 1 | 1 | 1 | 2026-09-22 16:00:00 |
 | 4 | Diego | Mora | (vacío) | diego.mora@example.test | scrypt:d4… | estudiante | Diseño Gráfico | 1 | 1 | 1 | 2026-09-23 17:15:00 |
 
-Descripcion y Portafolio quedan con su DEFAULT vacío y FechaModificacion es igual a FechaCreacion.
+Descripcion y Portafolio quedan con su DEFAULT vacío y FechaModificacion es igual a FechaCreacion. Los hashes abreviados son una representación documental; no son credenciales utilizables. En una migración real se conserva cada hash completo y se comprueba la compatibilidad del verificador scrypt antes del cambio de servidor.
 
 #### 2. Competencias
 
@@ -498,6 +508,8 @@ Descripcion y Portafolio quedan con su DEFAULT vacío y FechaModificacion es igu
 | 3 | Sostenibilidad |
 | 4 | Salud y bienestar |
 
+Para Competencias y Categorias, FechaCreacion y FechaModificacion de estos datos de prueba son `2026-09-20 12:00:00` UTC; Categoria de Categorias es NULL. En una migración real se copian las fechas y los valores opcionales originales.
+
 #### 4. UsuarioIntereses
 
 | Id | UsuarioId | Texto |
@@ -510,16 +522,16 @@ Descripcion y Portafolio quedan con su DEFAULT vacío y FechaModificacion es igu
 
 #### 5. UsuarioCompetencias
 
-| UsuarioId | CompetenciaId |
-| --- | --- |
-| 1 | 1 |
-| 1 | 2 |
-| 2 | 3 |
-| 2 | 4 |
-| 3 | 4 |
-| 3 | 6 |
-| 4 | 2 |
-| 4 | 5 |
+| UsuarioId | CompetenciaId  Orden |
+| --- | --- | --- |
+| 1 | 1  1 |
+| 1 | 2  2 |
+| 2 | 3  1 |
+| 2 | 4  2 |
+| 3 | 4  1 |
+| 3 | 6  2 |
+| 4 | 2  1 |
+| 4 | 5  2 |
 
 #### 6. Iniciativas
 
@@ -541,18 +553,18 @@ La tabla se muestra en dos partes por el ancho. Las dos comparten el Id. FechaMo
 
 #### 7. IniciativaCompetencias
 
-| IniciativaId | CompetenciaId |
-| --- | --- |
-| 1 | 1 |
-| 1 | 2 |
-| 1 | 4 |
-| 2 | 3 |
-| 2 | 4 |
-| 2 | 6 |
-| 3 | 2 |
-| 3 | 5 |
-| 4 | 1 |
-| 4 | 6 |
+| IniciativaId | CompetenciaId  Orden |
+| --- | --- | --- |
+| 1 | 1  1 |
+| 1 | 2  2 |
+| 1 | 4  3 |
+| 2 | 3  1 |
+| 2 | 4  2 |
+| 2 | 6  3 |
+| 3 | 2  1 |
+| 3 | 5  2 |
+| 4 | 1  1 |
+| 4 | 6  2 |
 
 #### 8. IniciativaEtiquetas
 
@@ -592,6 +604,8 @@ La tabla se muestra en dos partes por el ancho. Las dos comparten el Id. FechaMo
 | 1 | 3 | 1 | Me gustaría aportar con el desarrollo de la interfaz de la app. | Martes y jueves por la tarde | Desarrollo frontend | pendiente | NULL | (vacío) | 2026-10-20 20:00:00 |
 | 2 | 1 | 3 | Puedo asesorar el diseño del banco de tutorías y la gestión del proyecto. | Miércoles de 2:00 p. m. a 4:00 p. m. | Asesoría | aceptada | 2026-10-12 16:20:00 | Bienvenida al equipo. | 2026-10-11 18:00:00 |
 
+FechaModificacion de Solicitudes es igual a FechaCreacion para la solicitud 1 y a FechaDecision para la solicitud 2.
+
 #### 12. Proyectos
 
 | Id | IniciativaId | Nombre | FechaInicio | Estado | Repositorio | FechaFinEstimada | FechaCreacion |
@@ -601,6 +615,8 @@ La tabla se muestra en dos partes por el ancho. Las dos comparten el Id. FechaMo
 | Id | Descripcion | Objetivo |
 | --- | --- | --- |
 | 1 | Sistema web que registra y muestra el consumo eléctrico de los laboratorios de cómputo para detectar equipos encendidos fuera de horario. | Reducir el consumo eléctrico de los laboratorios con datos casi en tiempo real. |
+
+FechaModificacion del proyecto 1 es `2026-10-20 18:00:00` UTC.
 
 #### 13. SolicitudCompetencias
 
@@ -719,4 +735,18 @@ FROM Iniciativas AS i
 WHERE (SELECT COUNT(*) FROM EquipoIniciativa AS e WHERE e.IniciativaId = i.Id) > i.ParticipantesEstimados;
 ```
 
-**4. Comparar respuestas del API.** Con la tabla de equivalencias del paso 4 se toman tres iniciativas, se pide `GET /api/initiatives/{id}` al servidor Express con el `_id` viejo y al servidor .NET con el Id nuevo, y los dos JSON deben ser iguales salvo el campo `id`, que cambia por la migración. Si un conteo no cuadra, no se borra nada en MongoDB hasta encontrar la diferencia.
+**4. Comparar respuestas del API.** Con la tabla de equivalencias del paso 4 se toman tres iniciativas, se pide `GET /api/initiatives/{id}` al servidor Express con el `_id` viejo y al servidor .NET con el Id nuevo, y se comparan tras traducir TODOS los identificadores mediante la equivalencia: id, propietarioId, equipo[].usuarioId, iniciativaId y cualquier referencia anidada. El orden de arreglos y las fechas se normalizan únicamente conforme al contrato; los nombres de campo y los permisos deben coincidir. Si un conteo no cuadra, no se borra nada en MongoDB hasta encontrar la diferencia.
+
+## Controles adicionales del traslado
+
+Antes de cargar: exportar MongoDB, registrar los conteos, detener temporalmente escrituras y validar duplicados, tipos, largos de texto y referencias. La carga se prepara en una base nueva; si algo falla se revierte la transacción de ese lote y se corrige el registro, conservando el origen intacto. No truncar textos para hacerlos caber: informar los casos que superen los tamaños elegidos. Correo se normaliza en minúsculas; los UNIQUE usan una intercalación acordada para que mayúsculas y acentos no creen colisiones inesperadas.
+
+Los timestamps de catálogos se conservan. RowVersion NO copia el número revision: SQL Server genera un token binario nuevo. El valor viejo queda en el respaldo de auditoría; la concurrencia se reinicia deliberadamente al cambiar de servidor. HasData es para las semillas del laboratorio, no para migrar arbitrariamente la base del proyecto.
+
+Para conservar el orden de los arreglos de textos sin Id y de referencias (usuarios.competencias e iniciativas.competencias), se agrega **Orden INT NOT NULL CHECK (Orden >= 1)** a UsuarioCompetencias e IniciativaCompetencias, con **UNIQUE (UsuarioId, Orden)** y **UNIQUE (IniciativaId, Orden)** respectivamente. El diagrama anterior muestra las claves; Orden es un atributo ordinario, no una llave foránea. Los datos del paso 5 asignan Orden=1,2,... según el orden en que aparece cada pareja dentro de su usuario o iniciativa. En las tablas hijas con Id, se genera cada Id siguiendo el orden de los elementos del documento y se responde con ORDER BY Id. SolicitudCompetencias conserva el orden explícito documentado. Esta política permite reconstruir los arreglos sin suponer que una tabla tiene orden implícito.
+
+Reglas que requieren transacción del servidor: propietario activo e incluido en su equipo; aceptación de una solicitud e ingreso al equipo en una sola unidad; prohibición de retirar al propietario; cupo máximo; conversión única con al menos otro miembro; exclusividad del propietario para modificar; archivo de iniciativas con historia o con más de un integrante. Un CHECK de una fila no garantiza estas condiciones entre tablas. La aplicación serializa las modificaciones de la iniciativa (bloqueo de fila o aislamiento equivalente) y reintenta o informa los conflictos de RowVersion.
+
+La eliminación física de una iniciativa con solo su propietario puede eliminar ese miembro automático en cascada. Si hay otro miembro debe archivarse aunque no haya solicitudes: una FK con CASCADE por sí sola no aplica esa regla. No hay dos caminos de CASCADE desde Usuarios hacia EquipoIniciativa porque su FK a Usuarios usa NO ACTION.
+
+La verificación compara también conjuntos de referencias (no solo cantidades), campos escalares, suma de longitudes de cada arreglo, orden y ausencia de huérfanos. Tras comparar las dos rutas como visitante y como usuarios con distintos permisos, realizar una copia de seguridad de SQL Server y habilitar el nuevo servidor. Si falla la validación, se mantiene el servicio anterior y se restaura la copia nueva; no mezclar escrituras entre ambas bases durante la transición.

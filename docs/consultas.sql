@@ -84,13 +84,15 @@ WHERE Id = 4;
 
 -- ============================================================================
 -- 6. DELETE con su WHERE
--- Qué hace: Elimina físicamente la iniciativa 4 solo si no tiene solicitudes, retiros ni proyecto. Es la regla del Avance 2: si tiene alguna relación se archiva en lugar de borrarse. Por el CASCADE también se borran su equipo, sus competencias y sus etiquetas.
+-- Qué hace: Elimina físicamente la iniciativa 4 solo si no tiene solicitudes, retiros, proyecto ni integrantes adicionales al propietario. Es la regla del Avance 2: si tiene alguna relación se archiva en lugar de borrarse. Por el CASCADE también se borran su equipo, sus competencias y sus etiquetas.
 -- Resultado esperado: 1 fila afectada en Iniciativas. Por el CASCADE desaparecen también 1 fila de EquipoIniciativa, 2 de IniciativaCompetencias y 2 de IniciativaEtiquetas.
 DELETE FROM Iniciativas
 WHERE Id = 4
   AND NOT EXISTS (SELECT 1 FROM Solicitudes WHERE IniciativaId = 4)
   AND NOT EXISTS (SELECT 1 FROM RetirosEquipo WHERE IniciativaId = 4)
-  AND NOT EXISTS (SELECT 1 FROM Proyectos WHERE IniciativaId = 4);
+  AND NOT EXISTS (SELECT 1 FROM Proyectos WHERE IniciativaId = 4)
+  AND NOT EXISTS (SELECT 1 FROM EquipoIniciativa AS e
+                  WHERE e.IniciativaId = Iniciativas.Id AND e.UsuarioId <> Iniciativas.PropietarioId);
 
 -- ============================================================================
 -- 7. INSERT que la base rechaza (índice único filtrado)

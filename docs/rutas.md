@@ -33,7 +33,8 @@ SELECT c.Nombre
 FROM IniciativaCompetencias AS ic
 JOIN Competencias AS c ON c.Id = ic.CompetenciaId
 WHERE ic.IniciativaId = @Id
-ORDER BY c.Id;
+  AND EXISTS (SELECT 1 FROM Iniciativas i WHERE i.Id = @Id AND i.Visibilidad = 'publica' AND i.Estado NOT IN ('Borrador', 'Archivada'))
+ORDER BY ic.Orden;
 
 -- 3) Etiquetas.
 SELECT Texto
@@ -154,6 +155,14 @@ ORDER BY e.Id;
 
 ```sql
 DECLARE @Page INT = 2, @Size INT = 1;
+-- La API valida page entero 1..1000000 y size entero 1..100 antes de consultar.
+IF @Page NOT BETWEEN 1 AND 1000000 OR @Size NOT BETWEEN 1 AND 100
+    THROW 50001, 'Paginacion invalida', 1;
+DECLARE @Pagina TABLE (Id INT PRIMARY KEY);
+INSERT INTO @Pagina (Id)
+SELECT i.Id FROM Iniciativas i
+WHERE i.Visibilidad = 'publica' AND i.Estado NOT IN ('Borrador', 'Archivada')
+ORDER BY i.Id OFFSET (@Page - 1) * @Size ROWS FETCH NEXT @Size ROWS ONLY;
 
 -- 1) Total de iniciativas visibles (mismo filtro que la página).
 SELECT COUNT(*) AS Total
@@ -168,32 +177,31 @@ SELECT i.Id, i.Titulo, i.Tipo, i.Resumen, k.Nombre AS Categoria, i.Estado, i.Pro
 FROM Iniciativas AS i
 JOIN Categorias AS k ON k.Id = i.CategoriaId
 JOIN Usuarios AS u ON u.Id = i.PropietarioId
-WHERE i.Visibilidad = 'publica'
-  AND i.Estado NOT IN ('Borrador', 'Archivada')
-ORDER BY i.Id
-OFFSET (@Page - 1) * @Size ROWS
-FETCH NEXT @Size ROWS ONLY;
+WHERE i.Id IN (SELECT Id FROM @Pagina)
+ORDER BY i.Id;
 
 -- 3) Competencias de las iniciativas de la página.
 SELECT ic.IniciativaId, c.Nombre
 FROM IniciativaCompetencias AS ic
 JOIN Competencias AS c ON c.Id = ic.CompetenciaId
-WHERE ic.IniciativaId IN (4)          -- los Id obtenidos en la consulta 2
-ORDER BY ic.IniciativaId, c.Id;
+WHERE ic.IniciativaId IN (SELECT Id FROM @Pagina)
+ORDER BY ic.IniciativaId, ic.Orden;
 
 -- 4) Etiquetas de las iniciativas de la página.
 SELECT IniciativaId, Texto
 FROM IniciativaEtiquetas
-WHERE IniciativaId IN (4)             -- los Id obtenidos en la consulta 2
+WHERE IniciativaId IN (SELECT Id FROM @Pagina)
 ORDER BY IniciativaId, Id;
 
 -- 5) Equipo de las iniciativas de la página.
 SELECT e.IniciativaId, e.UsuarioId, u.Nombre, e.Rol, e.FechaIncorporacion
 FROM EquipoIniciativa AS e
 JOIN Usuarios AS u ON u.Id = e.UsuarioId
-WHERE e.IniciativaId IN (4)           -- los Id obtenidos en la consulta 2
+WHERE e.IniciativaId IN (SELECT Id FROM @Pagina)
 ORDER BY e.IniciativaId, e.Id;
 ```
+
+La variable de tabla @Pagina contiene los Id obtenidos de SQL Server: no hay una lista fija en el código. Si cambia page, size o la base, las consultas de relaciones siguen usando la página calculada. El ejemplo documenta el listado sin filtros opcionales; si se agrega q/type/category/skill del contrato se aplica el mismo predicado parametrizado al COUNT y a la selección de @Pagina, antes de OFFSET/FETCH. Nunca se reciben nombres de columna u operadores SQL desde el cliente.
 
 Con los datos de prueba hay dos iniciativas visibles para un visitante (la 1 y la 4), así que `total` es 2. Los demás campos salen igual que en la ruta 1. `totalPages` se calcula en el servidor como `ceil(total / size)` con mínimo 1.
 
@@ -256,3 +264,11 @@ Con los datos de prueba hay dos iniciativas visibles para un visitante (la 1 y l
 ```
 
 **Una página fuera de rango** conserva el número de página que se pidió y devuelve `items: []`.
+
+## Validación y armado
+
+El valor {id} llega como texto; la capa HTTP comprueba que represente un INT positivo antes de enlazarlo como parámetro. Un formato inválido responde 400 con `error.code = "VALIDATION_ERROR"`; un registro inexistente o no visible responde el 404 mostrado. En el detalle solo se consultan etiquetas y equipo después de comprobar que la consulta 1 devolvió una iniciativa autorizada. Nunca se exponen hash, correo ni la tabla de sesiones.
+
+La capa de respuesta agrupa filas por IniciativaId, crea arreglos vacíos cuando no hay relaciones y convierte cada Id y FK pública a texto. Los JSON mostrados son ejemplos documentales de los datos de prueba; la futura implementación los construirá desde las filas y no devolverá estas cadenas como respuesta fija. El COUNT usa el mismo filtro público. Como el contrato actual, el conteo y las lecturas separadas no prometen una instantánea transaccional frente a cambios concurrentes.
+
+Fuentes del contrato: `docs/api-contract.md` y `servidor/src/servicios/iniciativas.js` (`presentarIniciativa`, `listarIniciativas`), verificados sobre el commit `07607f1e1d91cb040210fd11b8a163645993d57d`. `permisos.js` confirma la exclusión de Borrador y Archivada para visitantes.

@@ -219,3 +219,7 @@ git diff -- README.md
 ```
 
 El script solo puede incluir commits ya existentes. El commit que guarda su actualización no aparecerá hasta la próxima regeneración.
+
+## Revisión de Tarea 3
+
+Los cuatro documentos de diseño se revisaron contra el contrato y el servidor del commit 07607f1. Se corrigieron el filtro de eliminación con integrantes adicionales, las consultas de página sin Id fijos, la conservación de timestamps/orden y las explicaciones de EF Core. La Parte B sigue siendo diseño documental: no se agrega un servidor C# ni se ejecutan las consultas del proyecto. El archivo investigacion-efcore.md se acompaña de una versión de lectura de dos páginas.
