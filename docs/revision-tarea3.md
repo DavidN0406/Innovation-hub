@@ -13,4 +13,4 @@ Origen: DavidN0406/Innovation-hub, main, commit 07607f1e1d91cb040210fd11b8a16364
 
 Los datos son ejemplos documentales completos para el diseño, no afirman ser una exportación de producción. Las consultas se revisaron documentalmente; la consigna no exige ejecutarlas. Este trabajo no modifica el contrato de API existente ni implementa el servidor final.
 
-La participación en la documentación debe ser de cada integrante real. David ya tiene commits en estos documentos; esta revisión se prepara con la identidad Git configurada de Gustavo. Jorge debe aportar su revisión o corrección real a los documentos antes de que el equipo cierre su etiqueta remota. No se suplantan autores.
+David preparó los documentos de diseño e investigación. Gustavo revisó el modelo, la migración y las rutas. Jorge corrigió la condición de borrado en [su aporte a la Tarea 3](https://github.com/DavidN0406/Innovation-hub/pull/2). La entrega conserva sus commits originales.
